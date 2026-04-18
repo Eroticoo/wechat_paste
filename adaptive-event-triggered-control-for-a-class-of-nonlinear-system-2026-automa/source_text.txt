@@ -1,0 +1,1461 @@
+===== Page 1 =====
+Automatica 184 (2026) 112703
+ 
+Contents lists available at ScienceDirect
+Automatica
+journal homepage: www.elsevier.com/locate/automatica
+ 
+Brief Paper
+Adaptive event-triggered control for a class of nonlinear systems with 
+unknown time-varying parameters$
+Yutian Wang a, Zhenghong Jin b,∗, Yi Jiang c,d
+a KIOS Research and Innovation Center of Excellence, University of Cyprus, Nicosia 1678, Cyprus
+b The State Key Laboratory of Industrial Control Technology, Zhejiang University, Hangzhou, 310027, China
+c The School of Artificial Intelligence and Automation and the Key Laboratory of Image Processing and Intelligent Control of Education Ministry of 
+China, China
+d The Hubei Key Laboratory of Brain-Inspired Intelligent Systems, Huazhong University of Science and Technology, Wuhan, China
+a r t i c l e  i n f o
+Article history:
+Received 14 April 2024
+Received in revised form 30 August 2025
+Accepted 28 October 2025
+Available online 20 November 2025
+Keywords:
+Time-varying parametric uncertainty
+Nonlinear parameterization
+Event-triggered control
+Switching adaptive control
+Average dwell-time (ADT)
+Input-to-state stability (ISS)
+Small-gain theorem
+ 
+a b s t r a c t
+This paper presents an adaptive event-triggered controller design approach for a class of nonlinear 
+systems subject to uncertain dynamics, unknown time-varying parameters, and external disturbances. 
+co-design approach is developed, incorporating the candidate controllers, the event-triggered sampling 
+mechanism based on the small-gain condition and the ‘‘pre-routed search’’ switching logic, such that 
+the closed-loop switched system is practically stable with average dwell-time switching behavior. 
+Furthermore, it shows that the closed-loop system can be exponentially stabilized by employing 
+a dynamic event-triggered sampling mechanism if the plant is disturbance-free and the unknown 
+parameters satisfy the exact-matching condition. In the above two cases, the infinitely many samplings 
+are excluded in any finite time interval.
+© 2025 Elsevier Ltd. All rights are reserved, including those for text and data mining, AI training, and 
+similar technologies.
+1. Introduction
+Over the past two decades, event-triggered control has been 
+extensively studied for its more flexible use of communication re-
+sources compared with periodically time-triggered control (Åström 
+& Bernhardsson, 2001; Tabuada, 2007). For nonlinear systems, 
+many seminal works of event-triggered control have been pre-
+sented; see, e.g., Liu and Huang (2017), Liu and Jiang (2015b), 
+Postoyan et al. (2015), Tallapragada and Chopra (2014), Wang and 
+Lemmon (2011), Yu and Chen (2023). One noticeable direction 
+is adaptive event-triggered control, aiming to handle parametric 
+uncertainty for an event-triggered control system. A popular topic 
+of adaptive event-triggered control is to synthesize an adaptive 
+backstepping-based event-triggered controller for a class of strict-
+feedback systems with linear parameterization; see, e.g., Huang 
+$ This work was supported in part by the National Natural Science Foun-
+dation of China under Grants 62403423 and 62503187, the China Postdoctoral 
+Science Foundation under Grant 2024T170771, 2025M771701, the Postdoctoral 
+Fellowship Program of CPSF under Grant GZC20241490, and the Natural Science 
+Foundation of Zhejiang Province under Grant LMS25F030003. The material in 
+this paper was not presented at any conference. This paper was recommended 
+for publication in revised form by Associate Editor Yang Zhu under the direction 
+of Editor Miroslav Krstic.
+∗Corresponding author.
+E-mail addresses: wang.yutian@ucy.ac.cy (Y. Wang), zhjin_zju@zju.edu.cn 
+(Z. Jin), auto_yijiang@hust.edu.cn (Y. Jiang).
+and Liu (2019), Li and Liu (2020), Xing et al. (2017), Zhang 
+et al. (2021). Except for the constructive design results, adaptive 
+event-triggered control is also studied in many other dimensions, 
+including event-triggered least square identifier (Karafyllis et al., 
+2020), adaptive event-triggered model predictive control (Zhang 
+et al., 2022; Zheng et al., 2023), multi-agent systems with event-
+triggered communication (Long et al., 2022; Qian & Wan, 2021), 
+model reference adaptive event-triggered control (Jiang et al., 
+2023), event-triggered control by neural network approxima-
+tion (Yu & Chen, 2021), adaptive event-triggered control of hy-
+perbolic PDEs (Wang & Kristić, 2022), adaptive event-triggered 
+control with input saturation (Adloo & Shafiei, 2023), and event-
+triggered control of poorly modeled ground vehicles (Xu et al., 
+2023), to name just a few.
+This paper presents a generic approach to adaptive event-
+triggered control design for a class of nonlinear systems. The sys-
+tem considered is characterized by uncertain dynamics, unknown 
+time-varying parameters, nonlinear parameterization, and exter-
+nal disturbances. To the best of the authors’ knowledge, the adap-
+tive event-triggered control literature has not yet addressed the 
+aforementioned class of systems, particularly those with event-
+triggered sampling occurring in the plant-to-controller commu-
+nication channel. It has been shown in the relevant literature, 
+e.g., Huang and Liu (2019), Li and Liu (2020), Yu and Chen (2021), 
+when dealing with the sampling in the plant-to-controller chan-
+nel, the design of continuously tuning-based adaptive laws is 
+https://doi.org/10.1016/j.automatica.2025.112703
+0005-1098/© 2025 Elsevier Ltd. All rights are reserved, including those for text and data mining, AI training, and similar technologies.
+
+===== Page 2 =====
+Y. Wang, Z. Jin and Y. Jiang
+Automatica 184 (2026) 112703
+challenged by the feedback control inputs which are discontin-
+uous in time. Moreover, the time-varying parameters together 
+with nonlinear parameterization further increases difficulties to 
+the adaptive event-triggered control. Our proposed switching-
+based approach decouples the adaptive event-triggered control 
+problem into three sub-problems: switching logic to supervise 
+the candidate controllers, robust design of candidate controllers, 
+and event-triggered sampling mechanism design. This structure 
+enables the integration of existing stabilizing control methods 
+into the proposed framework while maintaining robustness to the 
+time-varying parametric uncertainty and the sampling errors.
+It is worth noting that adaptive control of nonlinear sys-
+tems with time-varying parameters has attracted considerable 
+research effort over the past decades, but has attracted little 
+attention from the adaptive event-triggered control community. 
+The development of adaptive control with time-varying param-
+eters ranges from the early works (Kreisselmerer, 1986; Marino 
+& Tomei, 1999; Zhivoglyadov et al., 2001) to the state-of-the-art 
+advancements (Chen & Astolfi, 2021; Sung et al., 2022; Zhu et al., 
+2013a, 2013b). Specifically, Zhivoglyadov et al. (2001) and Sung 
+et al. (2022) use logic-based switching to deal with slowly varying 
+parameters, Zhu et al. (2013a, 2013b) proposed a modular-based 
+approach to constructive control design and removed the restric-
+tion of parameter’s slow variation, and Chen and Astolfi (2021) 
+developed a congelation of variables approach to handle the 
+unknown time-varying parameters.
+To solve the aforementioned problem, in this paper, we first 
+present a base scenario of fixed unknown parameter (Section 3), 
+in which the three design components are introduced, includ-
+ing a bank of input-to-state stable (ISS) (Sontag & Wang, 1995) 
+candidate controllers, event-triggered sampling mechanism, and 
+a pre-routed search switching logic (Angeli & Mosca, 2004a; 
+Mårtenson, 1985). Inspired by the base scenario, a co-design 
+approach is developed for these three components to handle the 
+time-varying parametric uncertainty (Section 4), in which the 
+sampling mechanism and the switching logic are simultaneously 
+designed with the bridge of candidate controllers (Remark 8). 
+Our proposed design guarantees that the plant state converges 
+to an adjustable forward invariant set containing the origin and 
+excludes infinitely many sampling events within any finite time 
+interval. Moreover, we provide an extension of the main re-
+sult which develops a dynamic sampling mechanism, such that 
+the plant state exponentially converges, under the parameter 
+exact matching condition (Section 5). In the extension result, 
+the co-design approach is further emphasized by simultaneously 
+selecting parameters from each design component.
+Notations and Terminology: We denote the sets of all real 
+numbers, non-negative and positive real numbers as R, R≥0 and 
+R>0, respectively, and the sets of non-negative integers and pos-
+itive integers to be N := {0, 1, 2, . . .} and N>0 := {1, 2, . . .}, 
+respectively. The definitions of comparison functions including 
+the classes of K, K∞ and KL functions are standard; see Khalil 
+(2002, Chapter 4.4). f ◦g represents the composition function of 
+f  and g defined on appropriate domains. | · | denotes the standard 
+Euclidean norm. A measurable function d : I →Rn with I
+being an interval in R≥0 is essentially bounded if there exists a 
+nonnegative ¯d such that |d(t)| ≤¯d for almost all t ∈I; it is locally 
+essentially bounded if it is essentially bounded on every bounded 
+subinterval of I (Sontag, 1998, p. 470). Let x+ = g(x) denote 
+a first-order dynamical system with x ∈Rn being the state, 
+where x+ indicates that the next value of the state is given as 
+the function of the current state x through the value g(x) (Goebel 
+et al., 2009, p. 30). A time-dependent signal x(t) is said to be 
+exponentially converging, if there exist constants c1 > 0 and 
+c2 < 0 such that |x(t)| ≤c1ec2t for all t ≥0 (Ioannou & Sun, 
+1996, p. 81).
+2. Problem formulation
+We consider the following class of nonlinear uncertain plants 
+with unknown time-varying parameter: 
+̇x(t) = f (x(t), u(t), d(t), θ∗(t))
+(1)
+where x ∈Rnx is the state, u ∈Rnu is the control input, d ∈Rnd
+is the external disturbance, θ∗∈Rnθ  represents the unknown 
+parameter, and f : Rnx+nu+nd+nθ →Rnx is a locally Lipschitz 
+function. When d is considered as a function of time, we assume 
+that d : R≥0 →Rnd is locally essentially bounded, i.e., |d(t)| ≤¯d
+for almost all t ≥0 with ¯d ∈R≥0.
+In this paper, we consider the state x, which is continuous with 
+respect to time t, is transmitted over a plant-to-controller com-
+munication channel, governed by an event-triggered sampling 
+mechanism: 
+tk+1 = inf {t > tk : |x(t) −x(tk)| ≥max{ρ(|x(t)|), ε}}
+(2)
+where ε ∈R>0 and ρ ∈K∞ are to be selected. The mechanism 
+(2) generates a sampling sequence denoted by {tk}k∈S with S ⊂N. 
+Throughout this paper, we admit that t0 = 0 and [0, Tmax) with 
+0 < Tmax ≤∞ is an interval on which the solution of plant (1) is 
+right maximally defined.
+This paper aims to design a pre-routed search controller based 
+on the sampled states x(tk) for a class of nonlinear systems with 
+slowly varying unknown parameters θ∗: R≥0 →Θ ⊆Rnθ
+where Θ is a compact set partitioned into N disjoint subsets Sp. 
+A switching mechanism is employed to supervise the multiple 
+candidate controllers, each associated with the parameter from 
+a corresponding subset Sp, with the objective of guaranteeing: 
+(a) the closed-loop system is forward complete and x ultimately 
+converges to a forward invariant set containing the origin; (b) x
+exponentially converges to the origin when θ∗ satisfies the exact 
+matching condition1 and d(t) = 0 for all t ∈R≥0; (c) there exists 
+a constant c ∈R>0 such that infk∈S{tk+1 −tk} ≥c. 
+Remark 1.  The systems in the form of (1) have been extensively 
+studied in the literature of adaptive control of nonlinearly param-
+eterized systems (systems with nonlinear parameterization), such 
+as (Loh et al., 1999), Angeli and Mosca (2004a) and Li and Chen 
+(2014) for analysis and control design of systems in the general 
+form, as well as (Marino & Tomei, 1993) and Lin and Qian (2002) 
+for constructive control design of systems in the lower-triangular 
+form. The nonlinearly parameterized systems typically contain 
+the class of linearly parameterized systems (unknown parameters 
+multiplying the nonlinearities).
+3. Preliminary result: Fixed unknown parameters
+This section temporarily considers the case when the un-
+known parameters are fixed. We introduce the designs of can-
+didate controllers, the event-triggered sampling mechanism, and 
+the switching logic, which paves the way to present the co-
+design approach of these three components in Sections 4 and 5. 
+The adaptability of the proposed approach is guaranteed by the 
+pre-routed search switching (Angeli & Mosca, 2004a; Mårtenson, 
+1985), which is formally defined in Algorithm 1.
+1 The exacting matching condition on the unknown parameter has been 
+typically used in the switching adaptive control literature (Liberzon, 2003; 
+Morse, 1996), requiring the parameter taking value from a discrete parameter 
+set.
+2
+
+===== Page 3 =====
+Y. Wang, Z. Jin and Y. Jiang
+Automatica 184 (2026) 112703
+3.1. Assumptions on the candidate controllers
+We first make some assumptions on the unknown parameter 
+θ∗ and the desired ISS property of the closed-loop system.
+Assumption 1.  Given θ∗: R≥0 →Rnθ , there exists a compact 
+set Θ ⊂⋃N
+p=1 Sp with p ∈P = {1, 2, . . . , N}, where N ∈N>0
+and each Sp ̸= ∅ is known and compact satisfying Sp ∩Sq = ∅ for 
+all p, q ∈P, such that θ∗: R≥0 →Θ ⊆Rnθ .
+Assumption 1 means that we have no information to which 
+subset θ∗ belongs, although θ∗
+∈Θ is known. Such an as-
+sumption was typically used in the switching adaptive literature, 
+e.g., Angeli and Mosca (2004b), Chen and Anderson (2012). 
+Assumption 2. θ∗(t) = θ∗ for all t ∈R≥0.
+By choosing θp ∈Sp for each p ∈P, we define a bank of 
+candidate control inputs up for p ∈P, with each up generated 
+by a static control law parameterized by θp: 
+up(t) = κ(x(tk), θp),
+∀t ∈[tk, tk+1), ∀k ∈S, ∀p ∈P
+(3)
+where κ : Rnx × Sp →Rnu is a Lipschitz continuous function. For 
+the purpose of analysis, we define the sampling error to be 
+w(t) = x(tk) −x(t),
+∀t ∈[tk, tk+1), ∀k ∈S.
+(4)
+In this subsection, we focus on the case when u(t) in plant (1) 
+is replaced by up(t):
+̇x(t) = f (
+x(t), κ(x(t) + w(t), θp), d(t), θ∗)
+=: ˘f (x(t), w(t), d(t), ˜θp, θp)
+(5)
+where w, d and ˜θp are considered as the system inputs, ˜θp :=
+θp −θ∗ represents the parameter mismatch, and the function 
+˘f
+:
+Rnx+nx+nd+nθ × Sp
+→
+Rnx is locally Lipschitz satisfying 
+˘f (0, 0, 0, 0, θp) = 0. In the remainder of the paper, we will refer 
+to (5) as the pth candidate closed-loop system.
+In what follows, we assume the ISS property for each pth 
+candidate closed-loop system (5), considering the scenario when 
+θ∗∈Sp for some p ∈P. By the compactness of Sp, for each p ∈P, 
+we first define a constant ∆p ∈R≥0 as ∆p := max{|θ1 −θ2| :
+θ1, θ2 ∈Sp}.
+Assumption 3.  For each p ∈P, there exist class K∞ functions 
+αp, αp, αp, γ w
+p , γ d
+p , γ θ
+p  and a continuously differentiable function 
+Vp : Rnx →R≥0 such that, for all θp ∈Sp and θ∗∈Sp, the 
+following holds: 
+αp(|x|) ≤Vp(x) ≤αp(|x|)
+(6)
+for all x ∈Rnx, and
+Vp(x) ≥max {
+γ w
+p (|w|), γ d
+p (|d|), γ θ
+p (|˜θp|)}
+⇒∇Vp(x)˘f (x, w, d, ˜θp, θp) ≤−αp(Vp(x))
+(7)
+for all (x, w, d, ˜θp, θp) ∈Rnx+nx+nd+nθ × Sp.
+Remark 2.  For plant (1), it may be questioned if both d(t) and 
+θ∗(t) can be formulated as system inputs or as system parame-
+ters. Regarding the system input formulation, the example below 
+demonstrates that θ∗ is not appropriate to be regarded as a 
+system input in general cases. Regarding the system parameter 
+formulation, we emphasize that the only assumption made on 
+d : R≥0 →Rnd is the local and essential boundedness, without 
+requiring any analogous assumptions made on θ∗, such as the 
+multiple estimates dp, the ISS assumption on dp −d, and the 
+slow variation premise. Therefore, d and θ∗ play fundamentally 
+different roles due to different assumptions made.
+Example 1.  Consider the scalar system ̇x = θ∗x+ u+ d where θ∗
+is the unknown parameter and d is the disturbance. The control 
+input is given as u = −kx3 −θpx where k ∈R>0. Normally, a 
+well-stabilized control system expects asymptotic stability at the 
+origin when the external inputs equal zero. Clearly, if θ∗ and d are 
+both regarded as disturbances, the closed-loop system becomes 
+̇x = −kx3 −θpx when θ∗= d = 0, and it is not asymptotically 
+stable when θp < 0. Instead, x converges to and stays in an 
+invariant set {x ∈R : |x| ≤
+√
+−θp/k}. In contrast, if we consider ˜θp
+and d as inputs, then the closed-loop system becomes ̇x = −kx3
+and it is globally asymptotically stable at the origin. Moreover, it 
+can be readily checked that V(x) = x2 is an ISS-Lyapunov function 
+satisfying Assumption 3 when k −1/γ1 −1/γ2 > 0, i.e., V(x) ≥
+max{γ1|˜θp|, (γ2|d|)
+2
+3 } ⇒∇V(x)̇x ≤−2
+(
+k −
+1
+γ1 −
+1
+γ2
+)
+V 2(x) holds 
+for all x ∈R, where γ1, γ2 ∈R>0.
+Remark 3.  Regarding constructive controller design to satisfy As-
+sumption 3 for high-dimensional nonlinear systems, it has been 
+reported in some literature. For example, Liu and Jiang (2015b) 
+proposed a set-valued control design to satisfy ISS properties with 
+respect to the sampling errors for a class of nonlinear systems 
+with triangular growth rate.
+3.2. ISS properties on the candidate closed-loop systems
+Based on the event-triggered sampling mechanism (2), the 
+following lemma shows that if the nonlinear function ρ is ap-
+propriately chosen, then the steady-state performance of the 
+closed-loop system is merely influenced by the constant ε, the 
+external disturbance d and the parameter mismatch ˜θp. 
+Lemma 1.  For each p ∈P, consider the closed-loop system (5) with 
+θ∗∈Sp, and the event-triggering mechanism (2). Under Assumptions 
+1–3, if the function ρ in (2) is chosen to satisfy the small-gain 
+condition 
+γ w
+p ◦ρ ◦α−1
+p (s) < s
+(8)
+for all s > 0, then there exists a βp ∈KL such that 
+Vp(x(t)) ≤max {
+βp(Vp(x(0)), t), γ w
+p (ε), γ d
+p (¯d), γ θ
+p (∆p)}
+(9)
+for all t ∈[0, Tmax).
+The proof of Lemma 1 is placed in Appendix A. The estimate 
+of Vp(x(t)) in (9) is important in the switching logic below.
+3.3. Switching logic and switched control law
+In the following content of this paper, the switching control 
+input of the plant (1) is considered to be generated by 
+u(t) = κ(x(tk), θσ(t)), ∀t ∈[tk, tk+1)
+(10)
+with k ∈S and σ(t) generated by the switching mechanism in 
+Algorithm 1. Based on (5), the closed-loop system with switched 
+control input defined by (10) can be represented as 
+̇x(t) = ˘f (x(t), w(t), d(t), ˜θσ(t), θσ(t)).
+(11)
+The solution of system (11) is used to construct the switching 
+condition in the following algorithm.
+3
+
+===== Page 4 =====
+Y. Wang, Z. Jin and Y. Jiang
+Automatica 184 (2026) 112703
+Algorithm 1 (Switching Logic: Handling Fixed Parameter)
+1. Initialize: h ←0; t = τh = 0; σ(t) = p, p ∈P;
+2. Calculate: W(t) = ˘β0 max
+{
+βσ(t)(Vσ(t)(x(τh)), t −τh),
+ 
+γ w
+σ(t)(ε), γ d
+σ(t)(¯d), γ θ
+σ(t)(∆σ(t))
+}
+;
+3. If Vσ(t)(x(t)) > W(t); then
+σ(t) = (σ(t−) mod N) + 1; h ←h + 1; τh = t;  go to 2;
+else σ(t) = σ(t−);   go to 2;
+4. Until t = Tmax; return σ(t);
+The switching logic in Algorithm 1 generates a sequence of 
+switching instants {τh}h∈S′ with S′ ⊆N and τ0 = t0 := 0. In 
+Step 1, the mode index σ is initialized to an arbitrary element 
+of P. In Step 2, we invoke the trajectory-based ISS estimate 
+(9) from Lemma 1 with a scaling factor ˘β0, where ˘β0 > 1 is 
+chosen to ensure a strictly positive lower bound for the inter-
+switch intervals. This scaled estimate serves as the triggering 
+threshold for the switching condition in Step 3. Given a, b ∈N>0, 
+a mod b := a −b⌊ab−1⌋ with ⌊x⌋:= max{n ∈N : n ≤x} for each 
+x ∈R≥0.
+Definition 1.  The switching behavior is said to be terminated at 
+a finite time instant t∗∈R≥0 if σ(t) = σ(t∗) for all t ∈[t∗, Tmax).
+Remark 4.  In practice, to save communication resources, an 
+auxiliary switching signal on the plant side can be generated as a 
+1-bit signal ˘σ ∈{−1, 1}: 
+˘σ(t) =
+{−˘σ(t−), if Vσ(t)(x(t)) > W(t),
+˘σ(t−),
+else
+(12)
+with ˘σ(τ0) = 1 or ˘σ(τ0) = −1, then it is transmitted through 
+the digital plant-to-controller channel and maintained by a zero-
+order hold until the next switch occurs. As a result, σ can still 
+be updated on the controller side by using Algorithm 1 and 
+modifying Step 3 as ‘If ˘σ(t) ̸= ˘σ(t−)’. This modification does not 
+alter the output σ(t) generated by Algorithm 1.
+The main result of this section is summarized below. 
+Theorem 1.  Consider the plant (1), the candidate controllers 
+(3), the event-triggered sampling mechanism (2) with function ρ
+satisfying the small-gain condition in (8), and the switching logic in 
+Algorithm 1. Under Assumptions 1–3, for any x(0) ∈Rnx, the state 
+x asymptotically converges to a forward invariant set containing the 
+origin, the switching behavior terminate in finite time, and both the 
+intervals of sampling and switching are strictly positive, i.e., there 
+exists c ∈R>0 such that tk+1−tk ≥c for all k ∈S and τh+1−τh ≥c
+for all h ∈S′.
+The proof of Theorem 1 is placed in Appendix B.
+Remark 5.  It is worth mentioning that the proposed switching-
+based event-triggered control algorithm does not exclude the 
+cases when switches and samplings coincide at one instant t ∈
+R≥0. However, the strictly positive intervals of switching and 
+sampling guarantee that there are at most two events (a switch 
+and a sampling) occur at one instant t ∈R≥0, which automati-
+cally excludes the infinitely many events within any finite time 
+interval. Therefore, the switching logic and the event-triggered 
+sampling mechanism are practical for implementation.
+Remark 6.  The result in Theorem 1 allows flexibility in adjusting 
+the scale of the invariant set that x converges into, as shown 
+in Appendix B. Specifically, the scale of the invariant set can 
+be tuned as long as the ISS gains γ w
+p , γ d
+p , γ θ
+p  remain adjustable. 
+In addition, the parameter ε in the event-triggered sampling 
+mechanism (2) can also be tuned, and the ∆p in Assumption 1 can 
+be reduced by dividing the parameter set Θ into more subsets Sp, 
+with each subset being smaller in scale.
+4. Main result: Unknown time-varying parameters
+4.1. System setup and assumptions
+In this section, we consider plant (1) with time-varying param-
+eters. An upgraded switching adaptive event-triggered control 
+method is proposed to handle the time-varying θ∗(t) provided 
+that θ∗(t) changes sufficiently ‘‘slowly’’ (Assumption 4).
+Let p∗: R≥0 →P be the index function such that at any 
+time t ∈R≥0 and for any p ∈P, if θ∗(t) ∈Sp, then we denote 
+p∗(t) :=
+p. We use a sequence {sj}j∈N to represent the time 
+instants when p∗(t−) ̸= p∗(t+).
+Assumption 4.  Given an interval T ∈R>0, it holds that sj+1−sj ≥
+T for all j ∈N.
+Assumption 4 is equivalent to stating that, for any t ∈R≥0, 
+the interval [t, t + T] contains at most one instant ˘t at which 
+p∗(˘t−) ̸= p∗(˘t+).
+Remark 7. Assumption 4 typically characterizes two scenar-
+ios of parameter variation, which are slow-drift and infrequent 
+jumps. For the case of slow-drift, the unknown parameter θ∗(t)
+is normally considered varying slowly and continuously, and 
+infrequent jumps restrict that at most one discontinuity occurs 
+in each T-interval. Similar Assumptions can be found in Sung 
+et al. (2022), Zhivoglyadov et al. (2001) for linear and nonlinear 
+discrete-time systems, respectively. In fact, θ∗(t) is allowed to 
+vary fast if Assumption 4 holds with a quite small T-interval.
+The following assumption is made on the ISS property of 
+the candidate closed-loop system composed of (1) and (3) when 
+θ∗(t), θp ∈Sp, which is written in the form of 
+̇x(t) = ˘f (x(t), w(t), d(t), ˜θp(t), θp)
+(13)
+where ˜θp(t) := θp −θ∗(t). 
+Assumption 5.  For p ∈
+P, there exist class K∞ functions 
+˘γ w
+p , ˘γ d
+p , ˘γ θ
+p , ˘αp,1, ˘αp,2 and a continuously differentiable function 
+Vp : Rnx →R≥0 such that for all θp ∈Sp and θ∗∈Sp, the following 
+holds: 
+˘αp,1(|x|) ≤Vp(x) ≤˘αp,2(|x|)
+(14)
+for all x ∈Rnx, and
+Vp(x) ≥max {
+˘γ w
+p (|w|), ˘γ d
+p (|d|), ˘γ θ
+p (|˜θp|)}
+⇒∇Vp(x)˘f (x, w, d, ˜θp, θp) ≤−λpVp(x)
+(15)
+for all (x, w, d, ˜θp, θp) ∈Rnx+nx+nd+nθ × Sp.
+Assumption 5 is an analogy to Assumption 3 but with an 
+exponential convergence rate λp, which is essential to guarantee 
+average dwell-time switching (Hespanha & Morse, 1999).
+4.2. Pre-routed search for average dwell-time switching
+This subsection shows that in the case when θ∗(t) is time-
+varying, the coordination of the ISS candidate control laws, the 
+event-triggered sampling mechanism based on small-gain con-
+dition, and the pre-routed search switching logic can guaran-
+tee the non-terminating switching behavior exhibiting average 
+dwell-time (Hespanha & Morse, 1999).
+The corresponding lemma follows the same reasoning as in 
+Lemma 1. 
+4
+
+===== Page 5 =====
+Y. Wang, Z. Jin and Y. Jiang
+Automatica 184 (2026) 112703
+Lemma 2.  For each p ∈P, consider the closed-loop system (13) 
+with θ∗(t) ∈Sp and the event-triggered sampling mechanism (2). 
+Suppose that Assumptions 1, 4, and 5 hold. If ρ in (2) is chosen to 
+satisfy the small-gain condition 
+˘γ w
+p ◦ρ ◦˘α−1
+p,1(s) < s,
+∀s > 0,
+(16)
+then we have 
+Vp(x(t)) ≤max {
+Vp(x(0))e−λpt, ˘γ w
+p (ε), ˘γ d
+p (¯d), ˘γ θ
+p (∆p)}
+(17)
+for all t ∈[0, Tmax).
+Lemma 2 can be readily proved based on the proof of Lemma 
+1 in Appendix A.
+Based on property (17), the switching signal σ(t) is updated 
+based on the switching logic in Algorithm 1 with W(t) in Step 2 
+being replaced by
+W(t) = ˘β0 max
+{
+Vσ(t)(x(τh))e−λp(t−τh), ˘γ w
+σ(t)(ε), ˘γ d
+σ(t)(¯d),
+˘γ θ
+σ(t)(∆σ(t))
+}
+,
+(18)
+where ˘β0 > 1 is the constant defined in Algorithm 1 to guarantee 
+a strictly positive lower bound of switching intervals.
+The following lemma shows that the co-design control strat-
+egy guarantees an average dwell-time switching behavior, which 
+is essential for closed-loop system stability.
+Lemma 3.  Consider the plant (1) and the switched control law 
+(10), the event-triggered sampling mechanism (2) with ρ defined 
+by (16), and the switching logic in Algorithm 1 with the switching 
+condition replaced by (34). Under Assumptions 1, 4 and 5, for any 
+given interval [ta, tb) with 0 ≤ta < tb ≤Tmax, the maximum 
+number of switches N(ta, tb) on [ta, tb) satisfies 
+N(ta, tb) ≤N0 + tb −ta
+τa
+(19)
+where N0 = 2(N −1) is the chatter bound and τa := T/(2(N −1))
+is the average dwell-time of switching.
+The proof of Lemma 3 is placed in Appendix C.
+4.3. Main theorem
+The main result of this section is summarized in Theorem 2. 
+Theorem 2.  Consider the plant (1) with θ∗(t) be time-varying, the 
+candidate controllers (3), the event-triggered sampling mechanism 
+(2) with function ρ satisfying the small-gain condition in (16), and 
+the switching logic in Algorithm 1 with the threshold W(t) in Step 2 
+replaced by (18). Under Assumptions 1, 4 and 5, if it holds that
+Vp(x) ≤µVq(x),
+∃µ ≥1, ∀p, q ∈P, ∀x ∈Rnx,
+(20)
+min
+p∈P {λp} ≥ln ˘β0µ
+τa
+,
+(21)
+then the state x converges to a forward invariant set containing the 
+origin, and both the intervals of sampling and switching are strictly 
+positive, i.e., there exists c ∈R>0 such that tk+1 −tk ≥c for all 
+k ∈S and τh+1 −τh ≥c for all h ∈S′.
+Remark 8.  We clarify here the co-design approach based on Fig. 
+1 following link I to IV. In link I, the function ρ in the sampling 
+mechanism and ˘γ w
+p , Vp derived by the ISS property are designed 
+simultaneously, which is shown in (16). In link II, the ISS property 
+for the closed-loop system directly determines the switching con-
+dition in (18). In link III, the convergence rate λp, p ∈P and the 
+average dwell-time τa guaranteed by the switching logic should 
+be chosen simultaneously. Link IV shows that ε in the sampling 
+Fig. 1. The co-design approach among the three components.
+mechanism is also used in the switching logic in Algorithm 1. The 
+co-design approach is further emphasized in the next section; see 
+Remark 10.
+Remark 9.  Without the exact matching condition, and provided 
+that the parameter mismatch ˜θp is excluded from the inputs of ISS 
+Assumption 5 and d(t) = 0 ∀t ≥0 is assumed, the exponential 
+convergence of x can still be ensured in Theorem 2 by using 
+the sampling mechanism with exponentially decaying threshold 
+((32) in Section 5). However, this will limit the application of 
+a wide range of stabilizing control techniques to satisfy the ISS 
+assumptions. In Angeli and Mosca (2004a), a discrete-time form 
+of plant (1) was studied, and a similar ISS assumption was made 
+as Vp(f (x, κp(x), d, θ∗)) −Vp(x) ≤−αp(|x|) + γp(|d|) whenever 
+θ∗∈
+Sp. Even though the mismatch ˜θp is not considered as 
+an input, the authors claimed in Remark 1 of Angeli and Mosca 
+(2004a) that the inequality above is a rather strong condition and 
+the corresponding robust control design can only be implemented 
+for a limited class of nonlinear systems.
+Proof of Theorem 2.  We first prove the forward completeness 
+of the closed-loop system by contradiction. Suppose Tmax < ∞. 
+Based on (17), for t ∈[0, τ1), one has Vσ(0)(x(t)) ≤˘β0 max{Vσ(0)
+(x(0))e−λσ(0)t, ˘γ w
+σ(0)(ε), ˘γ d
+σ(0)(¯d), ˘γ θ
+σ(0)(∆σ(0))}, and
+Vσ(0)(x(τ1)) ≤˘β0 max{Vσ(0)(x(0))e−λσ(0)τ1, ˘γ w
+σ(0)(ε), ˘γ d
+σ(0)(¯d),
+˘γ θ
+σ(0)(∆σ(0))}.
+(22)
+On [τ1, τ2), using (20), one has
+Vσ(τ1)(x(t)) ≤˘β0 max{µVσ(0)(x(τ1))e−λσ(τ1)(t−τ1), ˘γ w
+σ(τ1)(ε),
+˘γ d
+σ(τ1)(¯d), ˘γ d
+σ(τ1)(¯d), ˘γ θ
+σ(τ1)(∆σ(τ1))}
+≤˘β0 max
+{
+µ ˘β0 max{Vσ(0)(x(0))e−λσ(0)τ1, ˘γ w
+σ(0)(ε),
+˘γ d
+σ(0)(¯d), ˘γ θ
+σ(0)(∆σ(0))}e−λσ(τ1)(t−τ1), ˘γ w
+σ(τ1)(ε),
+˘γ d
+σ(τ1)(¯d), ˘γ θ
+σ(τ1)(∆σ(τ1))
+}
+,
+(23)
+where the first inequality uses condition (20). Inductively, for 
+t ∈[τj, τj+1) with τ0 = 0, we have
+Vσ(τj)(x(t)) ≤˘β0 max{( ˘β0µ)je−minl=0,...,j{λσ(τl)}tVσ(0)(x(0)), Γm,
+˘γ w
+σ(τj)(ε), ˘γ d
+σ(τj)(¯d), ˘γ θ
+σ(τj)(∆σ(τj))}
+(24)
+where the term Γm in (24) represents
+max
+m=0,1,...,j−1
+{
+( ˘β0µ)j−me−minl=0,...,m+1{λl}(t−τm+1) ˘γ w
+σ(τm)(ε),
+( ˘β0µ)j−me−minl=0,...,m+1{λl}(t−τm+1) ˘γ d
+σ(τm)(¯d),
+( ˘β0µ)j−me−minl=0,...,m+1{λl}(t−τm+1) ˘γ θ
+σ(τm)(∆σ(τm))
+}
+.
+Combining the fact j−m ≤N(τm+1, t)+1, the average dwell-time 
+(19), and inequality (21), for t ∈[τj, τj+1), we have that
+( ˘β0µ)j−me−minl=0,...,m+1{λl}(t−τm+1)
+≤( ˘β0µ)j−me−minp∈P{λp}(t−τm+1)
+5
+
+===== Page 6 =====
+Y. Wang, Z. Jin and Y. Jiang
+Automatica 184 (2026) 112703
+≤( ˘β0µ)N(τm+1,t)+1e−minp∈P{λp}(t−τm+1)
+≤eln( ˘β0µ)(N0+1+(t−τm+1)/τa)−minp∈P{λp}(t−τm+1) ≤( ˘β0µ)N0+1,
+where the last inequality uses (21). Then, for t ∈[τj, τj+1) with 
+any j ∈S′, we have
+Vσ(τj)(x(t)) ≤( ˘β0µ)N0+1 ˘β0 max
+l=1,...,j{Vσ(0)(x(0))e−minp∈P{λp}t, ˘γ w
+σ(τj)(ε),
+˘γ d
+σ(τj)(¯d), ˘γ θ
+σ(τj)(∆σ(τl))}.
+(25)
+It is concluded that x(t) is bounded on [0, τj+1) for j ∈S′, which 
+implies that x(t) is bounded on [0, Tmax) due to the finite switches 
+within [0, Tmax). In addition, the strictly positive lower bound of 
+each sampling interval can be proved in the same way as in the 
+proof of Theorem 1. Following the same reasoning as in the proof 
+of Theorem 1, it is guaranteed that all the sampling intervals are 
+strictly positive. Since x is bounded, the closed-loop system is 
+forward complete and thus Tmax = ∞ (Hale, 1980, Theorem 5.2). 
+Hence, for all t ≥0, we have
+|x(t)| ≤˘α1
+(
+˘µ max
+p∈P
+{
+˘α2(|x(0)|)e−minp∈P{λp}t, ˘γ ε
+p (ε), ˘γ d
+p (¯d), ˘γ θ
+p (∆p)
+})
+,
+where ˘µ := ( ˘β0µ)N0+1 ˘β0, ˘α1(s) := maxp∈P{˘α−1
+p,1}(s) and ˘α2(s) :=
+maxp∈P{˘αp,2}(s) for all s ≥0, which implies that x ultimately 
+converges to the forward invariant set at some instant t = t′ ≥0:
+{
+x ∈Rnx : |x| ≤˘α1
+(
+˘µ max
+p∈P
+{
+˘γ w
+p (ε), ˘γ d
+p (¯d), ˘γ θ
+p (∆p)
+})}
+.
+(26)
+This ends the proof of Theorem 2. □
+5. An extension: Exponential convergence under exact match-
+ing condition
+5.1. System setup and assumptions
+This section generalizes the main result in Section 4 to handle 
+a class of disturbance-free systems with the unknown parameters 
+satisfying the exact matching condition. We consider 
+̇x(t) = ¯f (x(t), u(t), θ∗(t))
+(27)
+where all the variables are defined in the same Euclidean spaces 
+as those for plant (1) and ¯f : Rnx+nu+nθ →Rnx is a Lipschitz 
+continuous function.
+The following assumption is made on the unknown parameter 
+θ∗(t) which satisfies the exact matching condition, namely, it 
+takes values from a given parameter set for all the time. 
+Assumption 6.  For a given parameter set ¯Θ = {θ1, θ2, . . . , θN}, 
+we have θ∗(t) ∈¯Θ for all t ∈R≥0.
+The following assumption is a counterpart of Assumption 4, 
+showing that θ∗(t) is slowly varying but in a discrete sense. 
+Assumption 7.  Given an interval T ∈R>0 and a time instant t′, 
+for any ˘t ∈[t′, t′ + T), θ∗(˘t+) ̸= θ∗(˘t−) only occurs once.
+The discontinuity in parameter variation has been extensively 
+studied in the context of adaptive control (Ioannou & Sun, 1996; 
+Tsakalis, 1992; Zhu et al., 2013a). Moreover, the exact matching 
+condition in Assumption 6 has also been used in the original 
+switching supervisory control literature (Liberzon, 2003; Morse, 
+1996), as well as in some recent advancements, e.g., Chong et al. 
+(2015), Lamare (2019).
+Consider that there exist a family of candidate controllers 
+defined by (3), and write the pth candidate closed-loop system 
+as
+̇x(t) = ¯f (x(t), κp(x(t) + w(t), θp), θ∗(t))
+=: ¯f1(x(t), w(t), θp).
+(28)
+Assumption 8 is an analogy to Assumptions 3 and 5.
+Assumption 8.  For each p ∈P, there exist positive constants 
+cp,1, cp,2, kp, λp, l ∈R>0 and a continuously differentiable func-
+tion Vp : Rnx →R≥0 such that for all θp ∈Sp and θ∗∈Sp, the 
+following holds: 
+cp,1|x|2 ≤Vp(x) ≤cp,2|x|2
+(29)
+for all x ∈Rnx, and 
+Vp(x) ≥kp|w|l ⇒∇Vp(x)¯f1(x, w, θp) ≤−λpVp(x)
+(30)
+for every (x, w, θp) ∈Rnx+nx+nθ .
+5.2. Dynamic event-triggered sampling mechanism
+Let us introduce a dynamic event-triggered sampling mech-
+anism, which is partially motivated by Liu and Jiang (2015a). 
+The decaying rate of the threshold in the sampling mechanism 
+is chosen based on the average dwell-time τa guaranteed by the 
+switching logic. The sampling instant is generated by 
+tk+1 = inf{t ≥tk : |x(t) −x(tk)| ≥η(t)}, k ∈S,
+(31)
+where η(t) is governed by the following initial value problem 
+̇η(t) = −¯kη(t), η(0) = η0,
+(32)
+where ¯k, η0 ∈R>0. 
+Lemma 4.  Consider the closed-loop system (28) and the event-
+triggered sampling mechanism (31)–(32). Under Assumptions 6–8, 
+for each p ∈P, the ISS-Lyapunov function Vp defined in (29)–(30) 
+satisfies that 
+Vp(x(t)) ≤max{Vp(x(0)), kpηl(0)}e−min{λp,¯kl}t
+(33)
+for all x(0) ∈Rnx, η(0) ∈R>0, and t ∈[0, Tmax).
+The proof of Lemma 4 is placed in Appendix D.
+With (33), the switching signal σ(t) is updated based on 
+Algorithm 1 with W(t) in Step 2 replaced by 
+W(t) = ˘β0 max{Vσ(t)(x(τh)), kpηl(τh)}e−λ∗
+σ(t)(t−τh)
+(34)
+where λ∗
+p := minp∈P{λp, ¯kl}.
+Lemma 5 is a counterpart of Lemma 3, which can be proved 
+following the same reasoning of the proof of Lemma 3.
+Lemma 5.  Consider the plant (27) controlled by (10), the dynamic 
+event-triggered sampling mechanism (32), and the switching logic in 
+Algorithm 1 with Step 2 replaced by (34). Under Assumptions 6–8, 
+the average dwell-time switching property still holds as in (19) of 
+Lemma 3.
+5.3. Exponential convergence
+We summarize the main result of this section into the follow-
+ing Theorem 3
+Theorem 3.  Consider the plant (27), the candidate controllers (3), 
+the event-triggered sampling mechanism (31)–(32), the switching 
+logic in Algorithm 1 with step 2 replaced by (34). Under Assumptions 
+6–8, if it holds that
+Vp(x) ≤µVq(x), ∃µ > 1, ∀p, q ∈P, x ∈Rnx,
+(35)
+2¯k + δ ≤min
+p∈P {λ∗
+p} −ln ˘β0µ
+τa
+,
+(36)
+6
+
+===== Page 7 =====
+Y. Wang, Z. Jin and Y. Jiang
+Automatica 184 (2026) 112703
+where δ ∈R>0, then for any x(0) ∈Rnx, x exponentially converges 
+to the origin, and both the intervals of sampling and switching are 
+strictly positive, i.e., there exists c ∈R>0 such that tk+1 −tk ≥c for 
+all k ∈S and τh+1 −τh ≥c for all h ∈S′.
+Remark 10.  The co-design approach can be seen from (36) in 
+Theorem 3. The three parameters should be determined simul-
+taneously, which include the convergence rate of the candidate 
+closed-loop systems λp, the convergence rate ¯k of the threshold 
+variable in the sampling mechanism, and the average dwell-time 
+τa guaranteed by the switching logic.
+Proof of Theorem 3.  The proof will be carried out with two 
+parts including the exponential convergence of the state and the 
+strictly positive lower bound of the sampling intervals.
+I. Exponential Convergence: Following the proof of Theorem 2, 
+on each switching interval [τj, τj+1), we have
+Vσ(τj)(x(t)) ≤( ˘β0µ)N0+1 ˘β0 max{kσ(0)ηl
+0, Vσ(0)(x(0))}e−(2¯k+δ)t,
+which implies that on t ∈[0, Tmax), |x(t)| is upper bounded by
+( ˘β0µ)
+N0+1
+2
+˘β
+1
+2
+0 max
+{√
+kσ(0)η0
+minp∈P{cp,1},
+√
+maxp∈P{cp,2}
+minp∈P{cp,1} |x(0)|
+}
+e−(¯k+ δ
+2 )t.
+II. Excluding Infinitely Many Samplings: In what follows, we 
+manage to prove Zeno-free sampling by constructing a differen-
+tial inclusion such that x(t) becomes one of the solutions of the 
+differential inclusion, and all its solutions exponentially converge 
+in compatible with x(t).
+Consider the following differential inclusion system: 
+̇z(t) ∈F(z(t)),
+z(0) ∈Z0
+(37)
+where z ∈Rnx is the state, F : Rnx
+⇒Rnx is the set-valued 
+map which is nonempty, compact, convex, and continuous2 in 
+z, and Z0 is a compact set. Furthermore, the system (37) and its 
+solutions satisfy the following properties: P1) F(0) = {0}; P2) 
+x(t; x(0)) ∈S(t; Z0) for all t ∈[0, Tmax) and all x(0) ∈Rnx, 
+where x(t; x(0)) is denoted as the solution of the closed-loop 
+system composed of (27) and (10); P3) maxz(t)∈S(t;Z0){|z(t)|} ≤
+maxz(0)∈Z0{|z(0)|}e−(¯k+δ/2)t for all t ∈[0, Tmax).
+Recall the solution of (32) that is η(t) = η0e−¯kt for t
+∈
+[0, Tmax). As the convergence rate of η(t) is smaller that of |x(t)|
+(which is ¯k + δ/2), there exists b
+>
+2 such that η(t)
+≥
+b max{|z(t)| : z(t) ∈S(t; Z0)} for all 
+t ∈
+[
+2
+δ
+ln(max{b|z(0)| : z(0) ∈Z0}/η0), Tmax
+)
+(38)
+Denote by t∗= 2
+δ ln(max{b|z(0)| : z(0) ∈Z0}/η0). Now we prove 
+the strictly positive lower bound of tk+1 −tk for all k ∈S by 
+separating the time-line into two parts. First, we consider the case 
+when 0 ≤t < t∗. Since η(t) ∈R>0 in this case, the strictly 
+positive lower bound of the sampling intervals can be proved 
+based on Part III in Appendix B. Next, we consider the case when 
+t ∈[t∗, Tmax). Due to the event-triggering mechanism in (32), one 
+has
+η(tk+1) = |x(tk+1) −x(tk)|
+≤max{|z(tk+1) −z(tk)| : z(tk+1) ∈S(tk+1; Z0), z(tk) ∈S(tk; Z0)}
+=: |z1(tk+1) −z2(tk)|.
+(39)
+where z1(t; z1(0)) with z1(0) ∈Z0 and z2(t; z2(0)) with z2(0) ∈Z0
+can be considered as two trajectories governed by ̇z1 = g1(z1) and 
+̇z2 = g1(z2) with g1, g2 being Lipschitz continuous functions and 
+2 Here, the continuity includes both upper semicontinuity and lower 
+semicontinuity.
+g1(0) = g2(0) = 0. Due to the Lipschitz continuity of gi for i = 1, 2
+and the boundedness of z1 and z2 from property P3), there exist 
+positive constants ai such that 
+|gi(zi(t))| ≤ai|zi(t)|, ∀zi(t) ∈S(t; Z0), ∀i = 1, 2.
+(40)
+Following the inequality (39), we have
+η(tk+1) ≤|z1(tk+1) −z2(tk+1)| + |z2(tk+1) −z2(tk)|
+≤2 max
+i=1,2 |zi(tk+1)| + (tk+1 −tk)
+∫tk+1
+tk
+|g2(z2(τ))|dτ
+≤2
+bη(tk+1) + (tk+1 −tk)
+max
+tk≤τ≤tk+1{a2|z2(τ)|}
+≤2
+bη(tk+1) + a2(tk+1 −tk)η(tk)
+(41)
+for t∗≤tk ≤Tmax with k ∈S. Since η(tk+1) = η(tk)e−¯k(tk+1−tk), 
+(41) yields a2(tk+1 −tk) ≥(1 −2
+b )e−¯k(tk+1−tk), which does not 
+hold if tk+1 −tk = 0. Then, there exists a c ∈R>0 such that 
+tk+1 −tk ≥c for all k ∈S. Following the same reasoning as 
+in the proof of Theorem 1, it is guaranteed that all the sampling 
+intervals are strictly positive. Since x is bounded, it is guaranteed 
+that Tmax = ∞, which completes the proof of Theorem 3. □
+6. Conclusions
+This paper has developed an adaptive event-triggered con-
+trol strategy for a class of nonlinear systems with time-varying 
+parametric uncertainty. A co-design approach of the candidate 
+controllers, the event-triggered sampling mechanism, and the 
+switching logic has been proposed to guarantee the robust-
+ness to the sampling error and the adaptability to the unknown 
+time-varying parameters, such that the plant state ultimately
+converges to an adjustable forward invariant set, the intervals 
+subject to sampling and switching have been proved to be strictly 
+positive. As an extension, a dynamic event-triggered sampling 
+mechanism has been designed to guarantee the exponential con-
+vergence of the plant state, when the disturbance is free and the 
+unknown parameter satisfies exact-matching condition. Future 
+research will be directed at establishing specific constructive 
+controller design methods for several classes of nonlinear plants 
+based on the proposed adaptive event-triggered control frame-
+work in this paper. Another future research is to relax the exact 
+matching condition in Section 5, while still guaranteeing the 
+exponential convergence of the state.
+Acknowledgments
+The authors would like to thank the AE and the anonymous 
+reviewers for their invaluable comments for the improvement of 
+the paper.
+Appendix A. Proof of Lemma 1
+With the small-gain condition (8), the sampling mechanism 
+(2) guarantees that γ w
+p (|w|) ≤γ w
+p (max{ρ(|x|), ε}) ≤max{γ w
+p ◦
+ρ ◦α−1
+p
+◦Vp(x(t)), γ w
+p (ε)} ≤max{Vp(x), γ w
+p (ε)} for all (x, w, ε) ∈
+Rnx+nx × R>0. It can be readily checked that
+Vp(x) ≥γ w
+p (ε) ⇒Vp(x) ≥γ w
+p (|w|), ∀(x, w, ε) ∈Rnx+nx × R>0.
+Hence, based on the ISS property in (7), we further have 
+Vp(x) ≥max {
+γ w
+p (ε), γ d
+p (|d|), γ θ
+p (|˜θp|)}
+⇒∇Vp(x)˘f (x, w, d, ˜θp, θp) ≤−αp(Vp(x))
+(A.1)
+7
+
+===== Page 8 =====
+Y. Wang, Z. Jin and Y. Jiang
+Automatica 184 (2026) 112703
+for all (x, w, d, ˜θp, θp) ∈Rnx+nx+nd+nθ × Sp with γ w
+p , γ d
+p , γ θ
+p , αp ∈
+K∞. Since αp ∈K∞, we have that given δp ∈R>0, there exist 
+kp ∈R>0 and δp ∈R>0 such that αp(s) ≥kps for all s ≥δ and 
+p ∈P. Letting δp ≤max {
+γ w
+p (ε), γ d
+p (|d|), γ θ
+p (|˜θp|)}
+, (A.1) yields
+Vp(x) ≥max {
+γ w
+p (ε), γ d
+p (|d|), γ θ
+p (|˜θp|)}
+⇒∇Vp(x)˘f (x, w, d, ˜θp, θp) ≤−kpVp(x).
+(A.2)
+Now, we show that (A.2) guarantees that (9) holds for all [0, Tmax)
+with β(s, t) = se−kpt for s ≥0. For each p ∈P, we define cp :=
+max{γ w
+p (ε), γ d
+p (¯d), γ θ
+p (∆p)} and a set Cp = {x ∈Rnx : Vp(x) ≤cp}. 
+The proof is carried out considering two cases of x(0) ∈Cp and 
+x(0) /∈Cp by contradiction. Consider the case x(0) ∈Cp. In this 
+case, we prove x(0) ∈Cp ⇒x(t) ∈Cp for all t ∈[0, Tmax). Suppose 
+that there exists 0 < T1 ≤Tmax such that x(T1) /∈Cp, implying 
+Vp(x(T1)) ≥cp + ιp for an ιp > 0. Define T2 := sup{0 ≤t ≤T1 :
+Vp(x(t)) ≤cp}. By continuity of Vp◦x, we have Vp(x(T2)) = cp. From 
+(7), we have ⟨∇Vp(x(t)), ̇x(t)⟩≤−kpVp(x(t)) for all t ∈[T1, T2], 
+implying ιp ≤Vp(x(T1)) −Vp(x(T2)) =
+∫T1
+T2 ⟨∇Vp(x(τ)), ̇x(τ)⟩dτ ≤
+−
+∫T1
+T2 kpVp(x(τ))dτ ≤0, which leads to a contradiction. Therefore, 
+it holds that Vp(x(t)) ≤cp for all t ∈[0, Tmax).
+Consider the case x(0) /∈
+Cp. Define T ′
+1 := inf{0 ≤t <
+Tmax : x(t) ∈Cp}. Then, we consider the sub-case that the set 
+T = {0 ≤t < Tmax : x(t) ∈Cp} is nonempty. In this case, we have 
+⟨∇Vp(x(t)), ̇x(t)⟩≤−kpVp(x(t)) for all t ∈[0, T ′
+1], which yields 
+Vp(x(t)) ≤Vp(x(0))e−kpt for all t ∈[0, T ′
+1]. Moreover, by definition 
+of T ′
+1, we have Vp(xp(x(t))) ≤cp for all t ∈[T ′
+1, Tmax). Then, we 
+conclude that property (9) holds for all t ∈[0, Tmax). When T  is 
+empty, it can be readily proved that Vp(x(t)) ≤Vp(x(0))e−kpt for all 
+t ∈[0, Tmax), which also verifies property (9) and thus completes 
+the proof.
+Appendix B. Proof of Theorem 1
+We first prove the forward completeness of the closed-loop 
+system composed of (1) and (10) by contradiction. Then, we 
+show the convergence of x(t). Assume that the solution of the 
+closed-loop system is defined on [0, Tmax) with Tmax < ∞.
+I. Finite Number of Switches: Denote the subset Sp∗ to which 
+θ∗ belongs. The switching logic in Algorithm 1 guarantees that 
+σ(t) can update at most N −1 times on [0, Tmax). This statement 
+can be proved by contradiction. Suppose that the switches occur 
+more than N−1 times. Under this hypothesis, we assume without 
+generality that σ(τ0) = p0 with p0 ∈P and p0 ̸= p∗, and σ(t)
+switches N times on [0, Tmax). This implies that σ(τN−1) = p0, 
+and thus there exists a switching instant τh0 < τN−1 with 1 ≤
+h0 < N −1 such that σ(τh0) = p∗, and then another switch occurs 
+at τh0+1. However, this violates the switching logic in Algorithm 
+1 because σ(t) = σ(τh0) must hold for all [τh0, Tmax) based on 
+Lemma 1. Therefore, the statement is proved. By recalling the 
+notation of the switching sequence {τh}h∈S′, it is clear that there 
+exists 1 ≤h∗≤N −1 such that S′ = {0, 1, . . . , h∗} is a finite 
+set. Then, it can be denoted that ⋃
+h∈S′[τh, τh+1) = [0, Tmax) with 
+τh∗+1 = Tmax by default.
+II. Boundedness of x: The switching logic in Algorithm 1 implies
+|x(t)| ≤α−1
+σ(τh)
+(
+˘β0 max{βσ(τh)(ασ(τh)(|x(τh)|), t −τh),
+γ d
+σ(τh)(¯d), γ w
+σ(τh)(ε), γ θ
+σ(τh)(∆σ(τh))}
+)
+(B.1)
+for all t ∈⋃
+h∈S′[τh, τh+1) with h ≤h∗. Admitting that the initial 
+value x(0) is bounded, then (B.1) implies that x(t) is bounded on 
+[0, τ1) due to that the inputs ¯d, ε and ∆p for p ∈P are bounded. 
+Then, we derive that x(τ1) is bounded from the continuity of 
+x(t). Using the property (B.1) again, we have that x(t) is bounded 
+on [τ1, τ2). Recalling that h∗ denotes the maximum number of 
+switches, we repeat the analysis above for another h∗−2 times, 
+and derive that x(t) is bounded for all t ∈[0, Tmax). For conve-
+nience of notation, we denote that there exists a constant M > 0
+such that |x(t)| ≤M for all t ∈[0, Tmax).
+III. Strictly Positive Sampling and Switching Intervals: From the 
+definition of the sampling error w(t) in (4), for t ∈[tk, tk+1), we 
+have 
+|w(t−
+k+1)| ≤
+⏐⏐⏐⏐
+∫tk+1
+tk
+̇x(τ)dτ
+⏐⏐⏐⏐≤(tk+1 −tk)
+max
+tk≤τ<tk+1{|̇x(τ)|}.
+(B.2)
+Then, based on the representation of the switched closed-loop 
+system in (11), we have 
+max
+tk≤τ<tk+1{|̇x(τ)|} ≤
+max
+tk≤τ<tk+1
+{⏐⏐⏐˘f (x(τ), w(τ), d(τ), θ∗, θσ(τ))
+⏐⏐⏐
+}
+(B.3)
+Since x is bounded by M, then the sampling mechanism in (2) 
+implies |w(t)| ≤max{ρ(|x(t)|), ε} ≤max{ρ(M), ε} =: M′ for all 
+t ∈[0, Tmax). Therefore, we derive from (B.3) that
+max
+tk≤τ<tk+1
+{⏐⏐⏐˘f (x(τ), w(τ), d(τ), θ∗, θσ(τ))
+⏐⏐⏐
+}
+≤
+max
+|x|≤M,|w|≤M′,|d|≤¯d,θ∗,θσ ∈Θ,σ∈P
+{⏐⏐⏐˘f (x, w, d, θ∗, θσ )
+⏐⏐⏐
+}
+=: M∗.
+(B.4)
+Substituting (B.4) into (B.2) and combined with |w(t−
+k+1)| ≥ε for 
+all k ∈S, we have 
+tk+1 −tk ≥
+ε
+M∗> 0, ∀k ∈S.
+(B.5)
+Also, the boundedness of x(t) on [0, Tmax) implies that it could 
+be continued onto at least a half-open interval [Tmax, T1) with 
+T1 > Tmax thus contradicts the hypothesis of Tmax < ∞. Then, 
+it is proved that x(t) is defined on [0, ∞) using the theorem 
+of continuation of solutions which is referred to Hale (1980, 
+Theorem 5.2) and Mironchenko (2023, Proposition 1.20).
+Now we show the strictly positive lower bound of the switch-
+ing intervals τh+1 −τh for all h ∈S′ by contradiction. Define a 
+piecewise constant function g : R≥0 →R≥0 such that g(t) = τh
+for all t ∈[τh, τh+1). Suppose that τ lim
+h
+:= limt→τ−
+h+1 g(t) =
+τh. Based on the switching condition in Algorithm 1, we have 
+Vσ(τh)(x(τ lim
+h
+)) = ˘β0W(τ lim
+h
+) = ˘β0W(τh) > 0, and it holds that 
+( ˘β0 −1)W(τh) = Vσ(τh)(x(τ lim
+h
+)) −Vσ(τh)(x(τh)) = 0.
+(B.6)
+Since ˘β0 > 1 and thus ( ˘β0 −1)W(τh) is strictly positive, (B.6) be-
+comes a contradiction. This indicates that there exists a constant 
+c ∈R≥0 such that τh+1 −τh ≥c for all h ∈S′.
+IV. Finite-Time Termination of Switching and Steady State of x(t): 
+Recall Tmax = ∞ and S′ = {0, 1, . . . , h∗} with h∗ as a finite 
+integer. Suppose there exists a integer ˘h ∈S′ such that ˘h =
+arg min{τh →∞: 1 ≤h ≤h∗}. Then, Definition 1 implies that 
+switching terminates at τ˘h−1 which is a finite time instant. From 
+the switching condition in step 3 of Algorithm 1, we have
+|x(t)| ≤α−1
+σ(τ˘h−1)
+(
+˘β0 max
+{
+βσ(τ˘h−1)(¯ασ(τ˘h−1)(|x(τ˘h−1)|), t −τ˘h−1),
+γ d
+σ(τ˘h−1)(¯d), γ w
+σ(τ˘h−1)(ε), γ θ
+σ(τ˘h−1)
+(
+∆σ(τ˘h−1)
+)})
+(B.7)
+for all t ≥τ˘h−1. Due to βσ(τ˘h−1)(¯ασ(τ˘h−1)(|x(τ˘h−1)|), t −τ˘h−1) →0
+as t →∞, (B.7) implies that there exists a finite time instant 
+t∗≥τ˘h−1, such that x stays within the region
+{
+x ∈Rnx : |x| ≤α−1
+σ(τ˘h−1)
+(
+˘β0 max
+{
+γ d
+σ(τ˘h−1)(¯d), γ w
+σ(τ˘h−1)(ε), γ θ
+σ(τ˘h−1)(∆σ(τ˘h−1))
+})}
+for all t ≥t∗. This ends the proof of Theorem 1.
+8
+
+===== Page 9 =====
+Y. Wang, Z. Jin and Y. Jiang
+Automatica 184 (2026) 112703
+Appendix C. Proof of Lemma 3
+The proof is carried out by showcasing the extreme scenario of 
+the maximum number of switches during [t, t +T]. First consider 
+a sub-interval [t, t + ˘t) where ˘t is defined right after Assumption 
+4. Clearly, in this interval p∗(t) is constant and the switching logic 
+ensures that the maximum number of switches is N −1. This 
+statement can be readily checked based on Part I in Appendix B. 
+Similarly, we conclude that N −1 is the maximum number of 
+switches during the remaining sub-interval [˘t, t + T]. Finally, it is 
+proved that there exists at most 2(N−1) switches during [t, t+T]
+for all t ∈R≥0. Consequently, on any time interval [ta, tb] ⊂
+[0, Tmax), the maximal number of switches can be estimated by 
+N(ta, tb) ≤2(N −1) (⌊(tb −ta)/T⌋+ 1) where ⌊·⌋ is defined after 
+Algorithm 1.
+Appendix D. Proof of Lemma 4
+We first give the definition of Clarke generalized gradient
+(Clarke et al., 1998, p. 7) as it will be frequently used in this proof 
+dealing with the derivative of the max-type function. 
+Definition 2.  For a locally Lipschitz function f : Rn →R, its 
+Clarke generalized gradient is defined by ∂f (x) = co{limi→∞∇f (xi)
+: xi →x, xi /∈Ωf } where ‘‘co’’ represents the convex hull, Ωf  is 
+the set of points at which f  fails to be differentiable, and {xi}i∈N
+is any sequence which converges to x while avoiding Ωf .
+Define a Lyapunov function candidate as Φ(¯x) := max{Vp(x),
+kpηl} for x ∈Rnx and η ∈R≥0, where ¯x := [xT, η]T ∈Rnx+1. On Rn
+we denote by PI : Rn →R#I the projection of the coordinates 
+in Rn corresponding to the indices in I ⊂{1, . . . , n} onto R#I
+with #I indicating the number of dimensions for the image of 
+P. Then we define v1(¯x) := Vp
+(
+PIx(¯x)) and v2(¯x) = kp(PIη(¯x))l
+where Ix = {1, . . . , nx} and Iη = nx + 1. Clearly, PIx(¯x) = x
+and PIη(¯x) = η. Based on (Clarke et al., 1998, p. 83), we have 
+the Clarke gradient of Φ(¯x) as ∂Φ(¯x) ⊂co{∪i∈M(¯x)∂vi(¯x)} where 
+M(¯x) = {i ∈{1, 2} : vi(¯x) = Φ(¯x)}. Let ζ ∈∂Φ(¯x), ζ1 ∈∂v1(¯x), 
+and ζ2 ∈∂v2(¯x), we have ζ = p1ζ1 + p2ζ2 with p1 + p2 = 1 and 
+p1, p2 ≥0. Then, one derives
+⟨
+ζ, [¯f T
+1 , −¯kη]T⟩
+= p1
+⟨
+ζ1, [¯f T
+1 , −¯kη]T⟩
++ p2
+⟨
+ζ2, [¯f T
+1 , −¯kη]T⟩
+= p1
+⟨
+PIx(ζ1), ¯f T
+1
+⟩
++ p2
+⟨
+PIµ(ζ2), −¯kη⟩
+(D.1)
+where ¯f1 := ¯f1(x, w, θp). Continuing to calculate the time deriva-
+tive, when Φ(¯x) = v1(¯x), we have p1 = 1, and thus p2 = 0. Then, 
+one has ⟨
+ζ1, [¯f T
+1 , −¯kη]T⟩
+= ⟨PIx(ζ1), ¯f T
+1 ⟩≤−λpΦ(¯x) If Φ(¯x) =
+v2(¯x), then p2 = 1 and p1 = 0, and one has ⟨PIµ(ζ2), −¯kη⟩=
+−kplηl−1¯kη = −¯klΦ(¯x). When v1(¯x) = v2(¯x), by substituting the 
+two cases above into (D.1), we have dΦ(¯x(t))
+dt
+≤−min{¯kl, λp}Φ(¯x)
+for all ¯x ∈Rnx+1. Combining the three cases above, it derives 
+Φ(¯x(t)) ≤Φ(¯x(0))e−min{¯kl,λp}t for all ¯x(0) ∈Rnx+1 and t ∈R≥0. 
+This ends the proof.
+References
+Adloo, H., & Shafiei, M. (2023). Observer-based adaptive event-triggered con-
+trol method for input saturated systems. Applied Mathematics Computation, 
+458(Article 128235).
+Angeli, D., & Mosca, E. (2004a). Adaptive switching supervisory control of 
+nonlinear systems with no prior knowledge of noise bounds. Automatica, 
+40, 449–457.
+Angeli, D., & Mosca, E. (2004b). Adaptive switching supervisory control of 
+nonlinear systems with no prior knowledge of noise bounds. Automatica, 
+40, 449–457.
+Åström, K. J., & Bernhardsson, B. M. (2001). Comparison of Riemann and lebesgue 
+sampling for first order stochastic systems. In Proceedings of the 41st IEEE 
+conference on decision and control (pp. 2011–2016).
+Chen, W., & Anderson, B. D. O. (2012). A combined multiple model adaptive 
+control scheme and its application to nonlinear systems with nonlinear 
+parameterization. IEEE Transactions on Automatic Control, 57, 1778–1782.
+Chen, K., & Astolfi, A. (2021). Adaptive control for systems with time-varying 
+parameters. IEEE Transactions on Automatic Control, 66(5), 1986–2001.
+Chong, M. S., Nešić, D., Postoyan, R., & Kuhlmann, L. (2015). Parameter 
+and state estimation of nonlinear systems using a multi-observer under 
+the supervisory framework. IEEE Transactions on Automatic Control, 60(9), 
+2336–2349.
+Clarke, F. H., Ledyaev, Y. S., Stern, R. J., & Wolenski, P. R. (1998). Nonsmooth 
+analysis and control theory. New York, NY, USA: Springer-Verlag.
+Goebel, R., Sanfelice, R. G., & Teel, A. R. (2009). Hybrid dynamical systems. IEEE 
+Control Systems Magazine, 29(2), 28–93.
+Hale, J. K. (1980). Ordinary differential equations (2nd ed.). Malabar, FL, USA: 
+Robert E. Krieger Publishing Company, Inc.
+Hespanha, J. P., & Morse, A. S. (1999). Stability of switched systems with average 
+dwell-time. In Proceedings of the 38th IEEE conference on decision and control 
+(pp. 2655–2660).
+Huang, Y., & Liu, Y. (2019). Switching event-triggered control for a class of 
+uncertain nonlinear systems. Automatica, 108, 1–12.
+Ioannou, P. A., & Sun, J. (1996). Englewood Cliffs, NJ, USA: Prentice-Hall.
+Jiang, Y., Shi, D., Fan, J., Chai, T., & Chen, T. (2023). Event-triggered model 
+reference adaptive control for linear partially time-variant continuous-
+time systems with nonlinear parametric uncertainty. IEEE Transactions on 
+Automatic Control, 68(3), 1878–1885.
+Karafyllis, I., Kontorinaki, M., & Krstic, M. (2020). Adaptive control by regulation-
+triggered batch least squares. IEEE Transactions on Automatic Control, 65(7), 
+2842–2855.
+Khalil, H. K. (2002). Nonlinear Systems (3rd ed.). New Jersey, USA: Prentice-Hall.
+Kreisselmerer, G. (1986). Adaptive control of a class of slowly time-varying 
+plants. Systems & Control Letters, 8, 97–103.
+Lamare, P.-O. (2019). Supervisory switching control for linear hyperbolic systems. 
+Automatica, 105, 64–70.
+Li, C., & Chen, M. Z. Q. (2014). On stabilizability of nonlinearly parameter-
+ized discrete-time systems. IEEE Transactions on Automatic Control, 59(11), 
+3014–3019.
+Li, F., & Liu, Y. (2020). Adaptive event-triggered output-feedback controller for 
+uncertain nonlinear systems. Automatica, 117, 1–13.
+Liberzon, D. (2003). Switching in systems and control. New York, NY, USA: 
+Birkhäuser Boston.
+Lin, W., & Qian, C. (2002). Adaptive control of nonlinearly parameterized 
+systems: The smooth feedback case. IEEE Transactions on Automatic Control, 
+47(8), 1249–1266.
+Liu, W., & Huang, J. (2017). Event-triggered global robust output regulation 
+for a class of nonlinear systems. IEEE Transactions on Automatic Control, 62, 
+5923–5930.
+Liu, T., & Jiang, Z.-P. (2015a). Event-based control of nonlinear systems with 
+partial state and output feedback. Automatica, 53, 10–22.
+Liu, T., & Jiang, Z.-P. (2015b). A small-gain approach to robust event-triggered 
+control of nonlinear systems. IEEE Transactions on Automatic Control, 60(8), 
+2072–2085.
+Loh, A.-P., Annaswamy, A., & Skantze, F. (1999). Adaptation in the presence 
+of a general nonlinear parameterization: An error model approach. IEEE 
+Transactions on Automatic Control, 44(9), 1634–1652.
+Long, J., Wang, W., Wen, C., Huang, J., & Lü, J. (2022). Output feedback 
+based adaptive consensus tracking for uncertain heterogeneous multi-agent 
+systems with event-triggered communication. Automatica, 136, 1–9.
+Marino, R., & Tomei, P. (1993). Global adaptive output-feedback control of 
+nonlinear systems, part II: Nonlinear parameterization. IEEE Transactions on 
+Automatic Control, 38(1), 33–48.
+Marino, R., & Tomei, P. (1999). An adaptive output feedback control for a class 
+of nonlinear systems with time-varying parameters. IEEE Transactions on 
+Automatic Control, 44(11), 2190–2194.
+Mårtenson, B. (1985). The order of any stabilizing regulator is sufficient a priori 
+information for adaptive stabilization. Systems & Control Letters, 6(2), 87–91.
+Mironchenko, A. (2023). Input-to-state stability: Theory and applications. 
+Switzerland: Springer Nature.
+Morse, A. S. (1996). Supervisory control of families of linear set-point 
+controllers–part 1: Exact matching. IEEE Transactions on Automatic Control, 
+41(10), 1413–1431.
+Postoyan, R., Tabuada, P., Nešić, D., & Anta, A. (2015). A framework for the event-
+triggered stabilization of nonlinear systems. IEEE Transactions on Automatic 
+Control, 60(4), 982–996.
+Qian, Y.-Y., & Wan, Y. (2021). Design of distributed adaptive event-triggered 
+consensus control strategies with positive minimum inter-event times. 
+Automatica, 133, 1–9.
+Sontag, E. D. (1998). Mathematical control theory: Deterministic finite dimensional 
+systems (2nd ed.). New York, NY, USA: Springer-Verlag.
+Sontag, E. D., & Wang, Y. (1995). On characterizations of the input-to-state 
+stability property. Systems & Control Letters, 24, 351–359.
+9
+
+===== Page 10 =====
+Y. Wang, Z. Jin and Y. Jiang
+Automatica 184 (2026) 112703
+Sung, Y.-C., Patil, S. V., & Safonov, M. G. (2022). Robustness of uncertain switching 
+nonlinear feedback systems against large time-variation. IEEE Transactions on 
+Automatic Control, 67(2), 993–1000.
+Tabuada, P. (2007). Event-triggered real-time scheduling of stabilizing control 
+tasks. IEEE Transactions on Automatic Control, 52(9), 1680–1685.
+Tallapragada, P., & Chopra, N. (2014). Decentralized event-triggering for con-
+trol of nonlinear systems. IEEE Transactions on Automatic Control, 59(12), 
+3312–3324.
+Tsakalis, K. S. (1992). Model reference adaptive control of linear time-varying 
+plants: the case of ‘jump’ parameter variations. International Journal of 
+Control, 56(6), 1299–1345.
+Wang, J., & Kristić, M. (2022). Event-triggered adaptive control of coupled 
+hyperbolic PDEs with piecewise-constant inputs and identification. IEEE 
+Transactions on Automatic Control, 68(3), 1568–1583.
+Wang, X., & Lemmon, M. D. (2011). Event-triggering in distributed networked 
+control systems. IEEE Transactions on Automatic Control, 56(3), 586–601.
+Xing, L., Wen, C., Liu, Z., Su, H., & Cai, J. (2017). Event-triggered adaptive control 
+for a class of uncertain nonlinear systems. IEEE Transactions on Automatic 
+Control, 62(4), 2071–2076.
+Xu, Y., Wu, Z., & Pan, Y. (2023). Observer-based dynamic event-triggered adap-
+tive control of distributed networked systems with application to ground 
+vehicles. IEEE Transactions on Industrial Electronics, 70(4), 4148–4157.
+Yu, H., & Chen, T. (2021). Event-triggered neural-network adaptive control for 
+strict-feedback nonlinear systems: Selections on valid compact sets. IEEE 
+Transactions on Neural Networks and Learning Systems, 34(8), 4750–4762.
+Yu, H., & Chen, T. (2023). Networked control for nonlinear plants subject to 
+updating disorder. IEEE Transactions on Automatic Control, http://dx.doi.org/
+10.1109/TAC.2023.3340981.
+Zhang, K., Liu, C., & Shi, Y. (2022). Self-triggered adaptive model predictive 
+control of constrained nonlinear systems: A min-max approach. Automatica, 
+142, 1–9.
+Zhang, Z., Wen, C., Xing, L., & Song, Y. (2021). Adaptive event-triggered control of 
+uncertain nonlinear systems using intermittent output only. IEEE Transactions 
+on Automatic Control, 67(8), 4218–4225.
+Zheng, K., Shi, D., Shi, Y., & Wang, J. (2023). Nonparametric event-triggered learn-
+ing with applications to adaptive model predictive control. IEEE Transactions 
+on Automatic Control, 68(6), 3469–3484.
+Zhivoglyadov, P. V., Middleton, R. H., & Fu, M. (2001). Further results on 
+localization-based switching adaptive control. Automatica, 37, 257–263.
+Zhu, Y., Wen, C., Su, H., & Liu, X. (2013a). Modular-based adaptive control of un-
+certain nonlinear time-varying systems with piecewise jumping parameters. 
+International Journal of Adaptive Control and Signal Processing, 28, 1266–1289.
+Zhu, Y., Wen, C., Su, H., Xu, W., & Wang, L. (2013b). Adaptive modular control 
+for a class of nonlinear systems with unknown time-varying parameters. In 
+Proceedings of 2013 American control conference (pp. 17–19).
+Yutian Wang received the B.Eng. degree in Mechan-
+ical Engineering from Shenyang Aerospace University, 
+Shenyang, China, in 2015, the M.S. degree in Vehicle 
+Engineering from Northeastern University, Shenyang, 
+China, in 2017, and the Ph.D. degree in Control Theory 
+and Control Engineering from Northeastern University, 
+Shenyang, China, in 2024. From August 2021 to October 
+2022, he was a Visiting Ph.D. Student at Seoul National 
+University, Seoul, South Korea. Since April 2024, he 
+has been a Postdoctoral Researcher with the KIOS Re-
+search and Innovation Center of Excellence, University 
+of Cyprus, Nicosia, Cyprus. His research interests focus on nonlinear control 
+systems and their applications in water distribution systems.
+Zhenghong Jin received the M.S. degree in mathemat-
+ics and the Ph.D. degree in control theory and control 
+engineering in 2018 and 2023, respectively, from 
+Northeastern University, Shenyang, China. From 2021 
+to 2022, he was a visiting scholar at Nanyang Techno-
+logical University, Singapore. He is currently Research 
+Fellow with College of Control Science and Engineering, 
+Zhejiang University, Hangzhou, China and School of 
+Mechanical and Aerospace Engineering, Nanyang Tech-
+nological University, Singapore.
+ 
+His current research interests include multi-agent 
+systems, distributed control and optimization, nonlinear control, source seeking.
+Yi Jiang was born in Ezhou, Hubei, China. He received 
+the B.Eng. degree in automation, M.S. and Ph.D. de-
+grees in control theory and control engineering from 
+Information Science and Engineering College and State 
+Key Laboratory of Synthetical Automation for Process 
+Industries in Northeastern University, Shenyang, China 
+in 2014, 2016 and 2020, respectively. From January to 
+July, 2017, he was a Visiting Scholar with the University 
+of Texas at Arlington, TX, USA, and from March 2018 
+to March 2019, he was a Research Assistant with the 
+University of Alberta, Edmonton, Canada. From March 
+2021 to February 2025, he was a Postdoc with the City University of Hong Kong, 
+Hong Kong, China. Currently, he is a professor with the Huazhong University of 
+Science and Technology, Wuhan, Hubei, China.
+ 
+His research interests include networked control systems, industrial process 
+operational control, reinforcement learning and event-triggered control. Dr. Jiang 
+is an Associate Editor for Advanced Control for Applications: Engineering and 
+Industrial Systems and the recipient of Excellent Doctoral Dissertation Award 
+from Chinese Association of Automation (CAA) in 2021 and Hong Kong Research 
+Grants Council (RGC) Postdoctoral Fellowship Scheme (PDFS) 2023/24.
+10
