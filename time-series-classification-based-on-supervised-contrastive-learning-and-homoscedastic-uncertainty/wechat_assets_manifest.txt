@@ -1,0 +1,11 @@
+figure_1.png	https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/time-series-classification-based-on-supervised-contrastive-learning-and-homoscedastic-uncertainty/images/figure_1.png
+figure_2.png	https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/time-series-classification-based-on-supervised-contrastive-learning-and-homoscedastic-uncertainty/images/figure_2.png
+figure_3.png	https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/time-series-classification-based-on-supervised-contrastive-learning-and-homoscedastic-uncertainty/images/figure_3.png
+header.png	https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/time-series-classification-based-on-supervised-contrastive-learning-and-homoscedastic-uncertainty/images/header.png
+table_1.png	https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/time-series-classification-based-on-supervised-contrastive-learning-and-homoscedastic-uncertainty/images/table_1.png
+table_2.png	https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/time-series-classification-based-on-supervised-contrastive-learning-and-homoscedastic-uncertainty/images/table_2.png
+table_3.png	https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/time-series-classification-based-on-supervised-contrastive-learning-and-homoscedastic-uncertainty/images/table_3.png
+technical_core_1.png	https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/time-series-classification-based-on-supervised-contrastive-learning-and-homoscedastic-uncertainty/images/technical_core_1.png
+technical_core_2.png	https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/time-series-classification-based-on-supervised-contrastive-learning-and-homoscedastic-uncertainty/images/technical_core_2.png
+technical_core_3.png	https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/time-series-classification-based-on-supervised-contrastive-learning-and-homoscedastic-uncertainty/images/technical_core_3.png
+technical_core_4.png	https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/time-series-classification-based-on-supervised-contrastive-learning-and-homoscedastic-uncertainty/images/technical_core_4.png
