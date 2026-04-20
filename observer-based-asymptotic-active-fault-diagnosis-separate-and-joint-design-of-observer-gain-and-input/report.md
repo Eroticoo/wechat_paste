@@ -1,6 +1,6 @@
 # 基于观测器的渐近主动故障诊断：观测器增益与输入的分离设计和联合设计
 
-![论文抬头：标题与作者](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/observer-based-asymptotic-active-fault-diagnosis-separate-and-joint-design-of-observer-gain-and-input/images/header.png)
+![论文抬头：标题与作者](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/observer-based-asymptotic-active-fault-diagnosis-separate-and-joint-design-of-observer-gain-and-input/images/header.png)
 
 - 作者：Feng Xu，Yiming Wan，Ye Wang，Vicenç Puig
 - 单位：清华大学深圳国际研究生院；华中科技大学人工智能与自动化学院；墨尔本大学数学与统计学院；加泰罗尼亚理工大学机器人与工业信息研究所（CSIC-UPC）
@@ -18,9 +18,15 @@
 
 
 
+
+
 $$
 x_{k+1} = A x_k + B G_i u_k + E \omega_k,
 $$
+
+
+
+
 
 
 
@@ -32,7 +38,11 @@ $$
 
 
 
+
+
 其中 $x_k$ 为状态，$u_k$ 为主动设计输入，$y_k$ 为测量输出，$G_i$ 表示故障模式，$\omega_k$ 与 $\eta_k$ 分别表示有界过程扰动与测量噪声。基于此，模式 $i$ 的 SVO 更新与输出集可写成
+
+
 
 
 
@@ -44,9 +54,15 @@ $$
 
 
 
+
+
+
+
 $$
 \hat Y_k^i = C \hat X_k^i \oplus F V.
 $$
+
+
 
 
 
@@ -65,26 +81,26 @@ $$
 ### 2.1 整体技术路线
 本文的技术路线是：**系统与 SVO 建模 $\rightarrow$ 定义原点排斥度 $\rightarrow$ 分离式增益/输入设计 $\rightarrow$ 联合增益与输入设计 $\rightarrow$ 在稳定性约束下实现主动诊断。** 因为这是典型控制与观测器论文，所以系统模型方程组本身必须显式写出，不能只靠截图。
 
-![系统模型、SVO 更新与 Assumption 2.1](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/observer-based-asymptotic-active-fault-diagnosis-separate-and-joint-design-of-observer-gain-and-input/images/technical_core_1.png)
+![系统模型、SVO 更新与 Assumption 2.1](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/observer-based-asymptotic-active-fault-diagnosis-separate-and-joint-design-of-observer-gain-and-input/images/technical_core_1.png)
 
 其中 **Assumption 2.1** 不是形式性假设，而是后续观测器设计和诊断可行性的前提。没有这类可检测性或可设计性条件，后面所有关于增益优化的讨论都站不住。
 
 ### 2.2 关键技术块解析
 **技术块 1：Lemma 3.1 给出了后续优化的关键分解。** 该引理把和故障效应相关的集合项拆解成便于分析和优化的结构，因此它不是孤立的小结果，而是后文增益与输入设计能够形成优化问题的桥梁。
 
-![Lemma 3.1：故障效应与集合项分解](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/observer-based-asymptotic-active-fault-diagnosis-separate-and-joint-design-of-observer-gain-and-input/images/lemma_1.png)
+![Lemma 3.1：故障效应与集合项分解](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/observer-based-asymptotic-active-fault-diagnosis-separate-and-joint-design-of-observer-gain-and-input/images/lemma_1.png)
 
 从证明链关系上看，Lemma 3.1 的作用类似一个代数中介：它把原本难直接操作的集合表达，整理成可用于性能指标和约束处理的分解式。
 
 **技术块 2：Algorithm 1 给出无约束场景下的分离设计与联合设计求解流程。** 作者在这里组织了一个可执行的优化框架，用于分别求解 observer gain only、input only 以及 joint gain-input 的设计方案。算法块下方的 **Proposition 3.3** 还进一步给出稳定性约束，这使得“设计得更激进”不会以牺牲观测器稳定性为代价。
 
-![Algorithm 1 与 Proposition 3.3：无约束联合设计及稳定性条件](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/observer-based-asymptotic-active-fault-diagnosis-separate-and-joint-design-of-observer-gain-and-input/images/algorithm_1.png)
+![Algorithm 1 与 Proposition 3.3：无约束联合设计及稳定性条件](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/observer-based-asymptotic-active-fault-diagnosis-separate-and-joint-design-of-observer-gain-and-input/images/algorithm_1.png)
 
 这一块的角色非常关键：Lemma 3.1 提供分解桥梁，Algorithm 1 把桥梁转成求解流程，Proposition 3.3 则给出可实施边界。三者共同支撑了 section 3.2 中的 joint design。
 
 **技术块 3：Algorithm 2 处理受约束场景下的区间搜索设计。** 当输入或设计变量存在约束时，论文并没有停留在理论描述，而是继续给出 constrained case 的算法流程，使得本文不只适用于“理想可调”场景。
 
-![Algorithm 2：受约束情形下的设计流程](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/observer-based-asymptotic-active-fault-diagnosis-separate-and-joint-design-of-observer-gain-and-input/images/algorithm_2.png)
+![Algorithm 2：受约束情形下的设计流程](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/observer-based-asymptotic-active-fault-diagnosis-separate-and-joint-design-of-observer-gain-and-input/images/algorithm_2.png)
 
 因此，本文的 section 2 不是简单并列几个算法，而是围绕“如何让观测器增益与主动输入一起提升诊断能力”逐层推进：先建立集合分解，再给无约束算法，再补上受约束实现。
 
@@ -94,20 +110,20 @@ $$
 
 **证据 1：Fig. 6 给出了 previous method 与 proposed method 的 fault-detection-time 地图。** 图中不同子图对应不同设计情形和采样时刻，直观展示了在参数平面上哪些区域更早触发故障检测。本文方法对应的可快速检测区域更大，这是联合设计优于既有方案的第一层视觉证据。
 
-![Fig. 6：previous 与 proposed 方法的故障检测时间地图](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/observer-based-asymptotic-active-fault-diagnosis-separate-and-joint-design-of-observer-gain-and-input/images/figure_1.png)
+![Fig. 6：previous 与 proposed 方法的故障检测时间地图](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/observer-based-asymptotic-active-fault-diagnosis-separate-and-joint-design-of-observer-gain-and-input/images/figure_1.png)
 
 **证据 2：Fig. 7 把两类方法的 FD time 做了更集中对比。** 这张图比 Fig. 6 更适合用来读“结论”：在相同场景下，本文方法能把检测时间压到更低，说明原点排斥度指标确实被转化成了更快的诊断效率。
 
-![Fig. 7：两类方法的故障检测时间对比](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/observer-based-asymptotic-active-fault-diagnosis-separate-and-joint-design-of-observer-gain-and-input/images/figure_2.png)
+![Fig. 7：两类方法的故障检测时间对比](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/observer-based-asymptotic-active-fault-diagnosis-separate-and-joint-design-of-observer-gain-and-input/images/figure_2.png)
 
 ### 3.2 主要结果与对比说明
 **证据 3：Fig. 10 展示了第一个执行器故障 \(G_1\) 下的 AFD 过程结果。** 这张图里既有输出集几何变化，也有排斥度或相关性能量的时序变化，因此它连接了“诊断是否更快”和“为什么更快”这两个问题。读者可以直接看到联合设计如何让错误模式更快被排除。
 
-![Fig. 10：第一个执行器故障 \(G_1\) 下的 AFD 结果](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/observer-based-asymptotic-active-fault-diagnosis-separate-and-joint-design-of-observer-gain-and-input/images/figure_3.png)
+![Fig. 10：第一个执行器故障 \(G_1\) 下的 AFD 结果](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/observer-based-asymptotic-active-fault-diagnosis-separate-and-joint-design-of-observer-gain-and-input/images/figure_3.png)
 
 **证据 4：Fig. 12 对比了 section 3.2 与 section 3.3 中不同设计方法的结果。** 这张图的重要性在于它不是简单重复前面的单次过程，而是把“分离设计”和“联合设计”放到同一对比框架下，使标题中的 separate vs. joint 真正落到了可比较的仿真证据上。
 
-![Fig. 12：分离设计与联合设计方法的对比结果](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/observer-based-asymptotic-active-fault-diagnosis-separate-and-joint-design-of-observer-gain-and-input/images/figure_4.png)
+![Fig. 12：分离设计与联合设计方法的对比结果](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/observer-based-asymptotic-active-fault-diagnosis-separate-and-joint-design-of-observer-gain-and-input/images/figure_4.png)
 
 整体来看，Section 3 的仿真证据层次很清楚：**Fig. 6 和 Fig. 7 证明检测更快，Fig. 10 说明 AFD 过程确实更利于模式排除，Fig. 12 则回答联合设计是否真的优于只做分离设计。** 这正好对应了本文最想强调的贡献。
 

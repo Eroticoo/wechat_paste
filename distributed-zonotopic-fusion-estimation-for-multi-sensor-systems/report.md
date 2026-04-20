@@ -1,6 +1,6 @@
 # 多传感器系统的分布式 Zonotopic 融合估计
 
-![论文抬头：标题与作者](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/header.png)
+![论文抬头：标题与作者](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/header.png)
 
 - 作者：Yuchen Zhang，Bo Chen，Zheming Wang，Wen-An Zhang，Li Yu，Lei Guo
 - 单位：浙江工业大学自动化系；北京航空航天大学自动化科学与电气工程学院
@@ -18,9 +18,15 @@
 
 
 
+
+
 $$
 x(k+1) = A(k)x(k) + B(k)w(k),
 $$
+
+
+
+
 
 
 
@@ -32,13 +38,19 @@ $$
 
 
 
+
+
 其中 $x(k)$ 是系统状态，$y_i(k)$ 是第 $i$ 个传感器的测量，$w(k)$ 和 $v_i(k)$ 分别是过程噪声与测量噪声。论文采用有界集合描述
+
+
 
 
 
 $$
 w(k)\in W,\qquad v_i(k)\in V_i,\qquad x(0)\in X_0.
 $$
+
+
 
 
 
@@ -57,30 +69,30 @@ $$
 ### 2.1 整体技术路线
 本文的技术主线是：**局部 zonotope 估计 $\rightarrow$ 交集外包融合 $\rightarrow$ strip 改进 $\rightarrow$ 顺序融合 $\rightarrow$ 生成矩阵有界性分析。** 由于这是估计问题而非分类或学习问题，所以系统模型块本身就是方法入口，不是可省略的背景。
 
-![系统模型与有界噪声设定](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/technical_core_1.png)
+![系统模型与有界噪声设定](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/technical_core_1.png)
 
 这组方程定义了局部估计器和融合估计器都依赖的对象：状态传播、传感器测量以及噪声有界集合。如果这里的符号关系不清楚，后面 Theorem 1、Theorem 2 和 Theorem 3 中的融合矩阵就无从理解。
 
 ### 2.2 关键技术块解析
 **技术块 1：Theorem 1 给出 batch 融合的基本判据。** 它说明如何利用各局部估计构造一个满足状态包含性的融合 zonotope。这个结果的作用是先保证“能融合、且不漏掉真实状态”，因此它是后续所有改进的支撑点。
 
-![Theorem 1：batch 融合的基本 zonotope 准则](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/theorem_1.png)
+![Theorem 1：batch 融合的基本 zonotope 准则](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/theorem_1.png)
 
 **技术块 2：Theorem 2 与 Lemma 4 构成减少保守性的桥梁。** 作者并没有停留在“包起来即可”，而是利用 strip 交集思想进一步压缩外包集合。这里 Lemma 4 不是旁支，而是 Theorem 2 能成立的重要支撑，因为它提供了构造改进包络所需的代数工具。
 
-![Theorem 2 与 Lemma 4：利用 strip 交集改进融合包络](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/theorem_2.png)
+![Theorem 2 与 Lemma 4：利用 strip 交集改进融合包络](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/theorem_2.png)
 
 这一块在方法链中的意义非常明确：Theorem 1 解决可行性，Theorem 2 解决保守性。换句话说，第二个定理不是重复第一个定理，而是在前者之上把融合结果“压紧”。
 
 **技术块 3：Theorem 3 与 Algorithm 2 把 batch 思路推进到 sequential 场景。** 当各传感器局部估计依次到达时，作者给出了顺序融合判据和对应算法，这一设计直接面向现实通信结构，也解释了为什么本文不仅讨论精度，还讨论复杂度。
 
-![Theorem 3：顺序融合的递推准则](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/theorem_3.png)
+![Theorem 3：顺序融合的递推准则](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/theorem_3.png)
 
-![Algorithm 2：顺序融合估计流程](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/algorithm_1.png)
+![Algorithm 2：顺序融合估计流程](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/algorithm_1.png)
 
 **技术块 4：Assumption 1、Lemma 9 与 Theorem 4 构成最终有界性分析链。** 作者并不满足于“构造出一个融合器”，还进一步说明在合适条件下 DZFE 的生成矩阵最终有界。这里 Assumption 1 是稳定性分析前提，Lemma 9 提供中间推导工具，Theorem 4 则给出最终结论，这是一条比较完整的证明链。
 
-![Assumption 1、Lemma 9 与 Theorem 4：生成矩阵最终有界性分析](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/technical_core_2.png)
+![Assumption 1、Lemma 9 与 Theorem 4：生成矩阵最终有界性分析](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/technical_core_2.png)
 
 ## 3. 仿真结果与对比分析
 ### 3.1 仿真设置与对比对象
@@ -88,22 +100,22 @@ $$
 
 **证据 1：Fig. 3 给出了多种包络方式对同一交集的几何近似。** 图中同时展示了基本 zonotope、本文定理得到的改进 zonotope、体积性能下的最小包络、盒包络和最小平行多面体包络。它最直接地说明本文方法不仅能保持包含性，而且在几何上更接近真实交集。
 
-![Fig. 3：不同 zonotope 包络与真实交集的几何比较](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/figure_1.png)
+![Fig. 3：不同 zonotope 包络与真实交集的几何比较](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/figure_1.png)
 
 这是一张非常关键的仿真图，因为它把 Theorem 1 和 Theorem 2 的差别可视化了：同样是“包住交集”，但保守性显著不同。
 
 **证据 2：Fig. 4 比较了计算时间随生成元数量变化的趋势。** 这是本文很有工程价值的一张图。它说明更紧的融合包络并不是免费得到的，因此论文没有回避“精度与复杂度”的现实权衡。
 
-![Fig. 4：不同融合策略的计算时间比较](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/figure_2.png)
+![Fig. 4：不同融合策略的计算时间比较](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/figure_2.png)
 
 ### 3.2 主要结果与对比说明
 **证据 3：Fig. 6 展示了不同估计器在目标速度估计中的动态表现。** 文中比较了 LE1、LE2 与 DZFE1、DZFE2 等多种估计结果，可以看到本文提出的融合估计在主要时段里更贴近真实速度，并且包络也更紧。这说明融合准则的改进不仅体现在几何图上，也体现在时域估计质量上。
 
-![Fig. 6：不同局部估计与 DZFE 的目标速度估计结果](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/figure_3.png)
+![Fig. 6：不同局部估计与 DZFE 的目标速度估计结果](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/figure_3.png)
 
 **证据 4：Fig. 7 给出加权 Frobenius 范数和体积指标的综合对比。** 这张图把“更优”具体化成了两个量化指标：一个衡量误差或偏离程度，一个衡量集合体积。结果表明，本文方法在多数时段同时兼顾了精度和紧致性，因此它不是单纯压缩体积导致的失真。
 
-![Fig. 7：加权 Frobenius 范数与体积性能比较](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/figure_4.png)
+![Fig. 7：加权 Frobenius 范数与体积性能比较](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/distributed-zonotopic-fusion-estimation-for-multi-sensor-systems/images/figure_4.png)
 
 综合 Section 3 可以看出，这篇论文在仿真安排上非常成熟：**Fig. 3 解释几何机理，Fig. 4 解释计算代价，Fig. 6 与 Fig. 7 则解释动态性能与综合指标。** 这让“分布式 zonotopic fusion 更优”的结论不是一句统称，而是由多种证据共同支撑。
 

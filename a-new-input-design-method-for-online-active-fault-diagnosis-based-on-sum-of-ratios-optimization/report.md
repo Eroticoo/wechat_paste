@@ -1,6 +1,6 @@
 # 基于和式分式优化的在线主动故障诊断新型输入设计方法
 
-![论文抬头：标题与作者](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/a-new-input-design-method-for-online-active-fault-diagnosis-based-on-sum-of-ratios-optimization/images/header.png)
+![论文抬头：标题与作者](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/a-new-input-design-method-for-online-active-fault-diagnosis-based-on-sum-of-ratios-optimization/images/header.png)
 
 - 作者：Bo Min，Feng Xu，James Lam，Chenchen Fan，Lin Lin
 - 单位：香港大学机械工程系；清华大学深圳国际研究生院；香港大学深圳研究院；香港理工大学康复科学系
@@ -18,6 +18,8 @@
 
 
 
+
+
 $$
 x_{k+1} = A x_k + B G_i u_k + E w_k,
 $$
@@ -26,9 +28,15 @@ $$
 
 
 
+
+
+
+
 $$
 y_k = C x_k + F \eta_k,
 $$
+
+
 
 
 
@@ -51,9 +59,11 @@ $$
 
 其中第一步不是背景铺垫，而是后续全部推导的前提。作者在系统模型之后给出了 **Assumption 1**，说明诊断窗口内真实系统只处于某一个固定执行器模式中，这个假设直接支撑后续“观测值不属于某模式输出集就删去该模式”的在线排除逻辑。
 
-![系统模型、Assumption 1 与集合递推起点](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/a-new-input-design-method-for-online-active-fault-diagnosis-based-on-sum-of-ratios-optimization/images/technical_core_1.png)
+![系统模型、Assumption 1 与集合递推起点](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/a-new-input-design-method-for-online-active-fault-diagnosis-based-on-sum-of-ratios-optimization/images/technical_core_1.png)
 
 在 zonotopic 描述下，模式 $i$ 的状态集与输出集递推可写为
+
+
 
 
 
@@ -65,9 +75,15 @@ $$
 
 
 
+
+
+
+
 $$
 Y_{k+1}^i = C X_{k+1}^i \oplus F V.
 $$
+
+
 
 
 
@@ -76,13 +92,13 @@ $$
 ### 2.2 关键技术块解析
 **技术块 1：Theorem 1 是把和式分式目标真正变成可算问题的桥梁。** 论文先把输入设计目标写成关于多组比值的 sum-of-ratios 问题，再用 **Theorem 1** 说明：如果原问题取得最优解，那么它与一组参数化非分式优化问题之间满足严格的 KKT 关联。这个定理不是附属推导，而是从“好指标”到“能在线实现”的关键桥梁。
 
-![Theorem 1：和式分式优化与参数化问题之间的桥梁](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/a-new-input-design-method-for-online-active-fault-diagnosis-based-on-sum-of-ratios-optimization/images/theorem_1.png)
+![Theorem 1：和式分式优化与参数化问题之间的桥梁](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/a-new-input-design-method-for-online-active-fault-diagnosis-based-on-sum-of-ratios-optimization/images/theorem_1.png)
 
 从方法链上看，Theorem 1 的意义在于把分散度最大化目标从一个直接难解的问题，转成后续能够反复更新参数并嵌入优化器的形式。也就是说，定理本身并不直接给出输入，但它支撑了后面的算法化求解步骤。
 
 **技术块 2：Algorithm 1 给出在线输入设计的实际求解流程。** 在定理建立的桥梁之上，作者进一步组织出每个采样时刻可执行的更新流程：根据当前集合信息形成参数，迭代求解参数化优化，再输出最优输入 $u_k^\ast$。因此，Algorithm 1 是把理论桥梁落到工程实现的那一步。
 
-![Algorithm 1：在线输入设计求解流程](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/a-new-input-design-method-for-online-active-fault-diagnosis-based-on-sum-of-ratios-optimization/images/algorithm_1.png)
+![Algorithm 1：在线输入设计求解流程](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/a-new-input-design-method-for-online-active-fault-diagnosis-based-on-sum-of-ratios-optimization/images/algorithm_1.png)
 
 如果把本文看成一个完整系统，那么 **Assumption 1 提供可诊断前提，Theorem 1 提供可解性桥梁，Algorithm 1 则提供在线执行机制**。这三者并不是平行堆叠，而是前提、转换和实现三层关系。
 
@@ -92,24 +108,24 @@ $$
 
 **证据 1：Fig. 3 直接展示了本文方法如何在早期采样时刻拉开集合。** 图中考察的是第一个故障执行器模式、故障大小 $f_1=0.6$ 的场景，作者展示了 $k=1$ 与 $k=2$ 两个时刻的输出集合几何关系。可以看出，随着输入在线更新，不同候选模式的 zonotope 很快产生可用于排除的分离。
 
-![Fig. 3：本文方法在第一个故障模式下的在线 AFD 结果](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/a-new-input-design-method-for-online-active-fault-diagnosis-based-on-sum-of-ratios-optimization/images/figure_2.png)
+![Fig. 3：本文方法在第一个故障模式下的在线 AFD 结果](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/a-new-input-design-method-for-online-active-fault-diagnosis-based-on-sum-of-ratios-optimization/images/figure_2.png)
 
 这张图证明的是“本文输入确实把集合 separation tendency 推高了”，而不是只在数值指标上做了事后解释。对读者来说，这也是最直观的一张仿真图。
 
 **证据 2：Fig. 4 给出与 Tan et al. (2022) 的过程级对比。** 对比方法在相同故障场景下直到 $k=3$ 仍保留更多重叠和歧义，而本文方法在更早阶段就形成了更强的排除趋势。由于两张图都展示了 mode-wise 输出集的形状变化，所以这是比最终统计表更“机理化”的对比证据。
 
-![Fig. 4：与 Tan et al. (2022) 的在线诊断过程对比](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/a-new-input-design-method-for-online-active-fault-diagnosis-based-on-sum-of-ratios-optimization/images/figure_3.png)
+![Fig. 4：与 Tan et al. (2022) 的在线诊断过程对比](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/a-new-input-design-method-for-online-active-fault-diagnosis-based-on-sum-of-ratios-optimization/images/figure_3.png)
 
 ### 3.2 主要结果与对比说明
 在更大范围的统计结果上，作者没有停留在单次图形展示，而是做了 100 次试验平均步数比较，这让结论更稳。
 
 **证据 3：Table 2 说明在多组 $f_1$ 区间下，本文方法多数情况下需要更少的平均诊断步数。** 尤其在中等故障幅值区间如 $f_1 \in [0.45,0.55]$、$[0.55,0.65]$ 时，本文方法分别需要 2 步和 2 步，而对比方法需要 2.76 步和 3 步。这说明改进分散度并非只对极端故障有效，恰恰在更难区分的中间区间更有价值。
 
-![Table 2：不同 \(f_1\) 区间下的平均诊断步数](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/a-new-input-design-method-for-online-active-fault-diagnosis-based-on-sum-of-ratios-optimization/images/table_1.png)
+![Table 2：不同 \(f_1\) 区间下的平均诊断步数](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/a-new-input-design-method-for-online-active-fault-diagnosis-based-on-sum-of-ratios-optimization/images/table_1.png)
 
 **证据 4：Table 3 进一步检验了在其他故障参数区间组合变化下的方法稳定性。** 这里作者改变的是 $f_2,f_3,f_4$ 的设置并统计 100 次试验结果。结果显示，本文方法在多数组合下仍然保持不差甚至更优的平均诊断速度，这支持了“并非只针对单一场景调参”的判断。
 
-![Table 3：不同 \(f_2/f_3/f_4\) 区间组合下的平均诊断步数](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@main/a-new-input-design-method-for-online-active-fault-diagnosis-based-on-sum-of-ratios-optimization/images/table_2.png)
+![Table 3：不同 \(f_2/f_3/f_4\) 区间组合下的平均诊断步数](https://cdn.jsdelivr.net/gh/Eroticoo/wechat_paste@c4975436ddc585ea99b9adac2936d5975d9b8155/a-new-input-design-method-for-online-active-fault-diagnosis-based-on-sum-of-ratios-optimization/images/table_2.png)
 
 综合来看，本文的证据链比较完整：**Fig. 3 和 Fig. 4 回答“为什么更快”，Table 2 和 Table 3 回答“是不是普遍更快或至少更稳”**。这也是这篇 brief paper 最有说服力的部分。
 
